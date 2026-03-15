@@ -58,4 +58,27 @@ public class ComplaintService {
 
         return complaintRepository.findAll();
     }
+    
+    public Complaint assignTechnician(Long complaintId, Long technicianId) {
+
+        Complaint complaint = complaintRepository.findById(complaintId)
+                .orElseThrow(() -> new ResourceNotFoundException("Complaint not found"));
+
+        User technician = userRepository.findById(technicianId)
+                .orElseThrow(() -> new ResourceNotFoundException("Technician not found"));
+
+        complaint.setTechnician(technician);
+
+        return complaintRepository.save(complaint);
+    }
+    
+    public Complaint updateStatus(Long complaintId, String status) {
+
+        Complaint complaint = complaintRepository.findById(complaintId)
+                .orElseThrow(() -> new ResourceNotFoundException("Complaint not found"));
+
+        complaint.setStatus(status);
+
+        return complaintRepository.save(complaint);
+    }
 }
