@@ -2,6 +2,7 @@ package com.cms.controller;
 
 import com.cms.model.Complaint;
 import com.cms.service.ComplaintService;
+import com.cms.model.ComplaintStatus;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +31,7 @@ public class AdminController {
     
     @PutMapping("/update-status")
     public Complaint updateStatus(@RequestParam Long complaintId,
-                                  @RequestParam String status) {
+                                  @RequestParam ComplaintStatus status) {
 
         return complaintService.updateStatus(complaintId, status);
     }

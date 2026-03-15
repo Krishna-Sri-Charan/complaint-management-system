@@ -21,9 +21,11 @@ public class Complaint {
     @Column(length = 1000)
     private String description;
 
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private ComplaintStatus status;
 
-    private String priority;
+    @Enumerated(EnumType.STRING)
+    private ComplaintPriority priority;
 
     private LocalDateTime createdAt;
 
