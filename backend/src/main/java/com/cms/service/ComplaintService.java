@@ -5,6 +5,7 @@ import com.cms.model.Complaint;
 import com.cms.model.User;
 import com.cms.repository.ComplaintRepository;
 import com.cms.repository.UserRepository;
+import com.cms.exception.ResourceNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,8 +24,8 @@ public class ComplaintService {
 
     public Complaint createComplaint(ComplaintRequest request, Long userId) {
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    	User user = userRepository.findById(userId)
+    	        .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         Complaint complaint = Complaint.builder()
                 .title(request.getTitle())
@@ -35,7 +36,8 @@ public class ComplaintService {
                 .user(user)
                 .build();
 
-        return complaintRepository.save(complaint);
+        return complaintRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Complaint not found"));
     }
 
     public List<Complaint> getUserComplaints(Long userId) {
