@@ -23,6 +23,9 @@ public class ComplaintService {
 
     @Autowired
     private UserRepository userRepository;
+    
+    @Autowired
+    private ComplaintUpdateService complaintUpdateService;
 
     public Complaint createComplaint(ComplaintRequest request, Long userId) {
 
@@ -37,9 +40,16 @@ public class ComplaintService {
                 .createdAt(LocalDateTime.now())
                 .user(user)
                 .build();
+        
+        Complaint savedComplaint = complaintRepository.save(complaint);
 
-        return complaintRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("Complaint not found"));
+        complaintUpdateService.addUpdate(
+                savedComplaint,
+                "Complaint created",
+                user
+        );
+
+        return savedComplaint;
     }
 
     public List<Complaint> getUserComplaints(Long userId) {
@@ -70,6 +80,12 @@ public class ComplaintService {
                 .orElseThrow(() -> new ResourceNotFoundException("Technician not found"));
 
         complaint.setTechnician(technician);
+        
+        complaintUpdateService.addUpdate(
+                complaint,
+                "Technician assigned",
+                technician
+        );
 
         return complaintRepository.save(complaint);
     }
@@ -80,6 +96,12 @@ public class ComplaintService {
                 .orElseThrow(() -> new ResourceNotFoundException("Complaint not found"));
 
         complaint.setStatus(status);
+        
+        complaintUpdateService.addUpdate(
+                complaint,
+                "Status changed to " + status,
+                complaint.getUser()
+        );
 
         return complaintRepository.save(complaint);
     }

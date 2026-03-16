@@ -2,7 +2,9 @@ package com.cms.controller;
 
 import com.cms.dto.ComplaintRequest;
 import com.cms.model.Complaint;
+import com.cms.model.ComplaintUpdate;
 import com.cms.service.ComplaintService;
+import com.cms.service.ComplaintUpdateService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +17,9 @@ public class ComplaintController {
 
     @Autowired
     private ComplaintService complaintService;
+    
+    @Autowired
+    private ComplaintUpdateService complaintUpdateService;
 
     @PostMapping
     public Complaint createComplaint(@RequestBody ComplaintRequest request,
@@ -33,5 +38,13 @@ public class ComplaintController {
     public Complaint getComplaintById(@PathVariable Long id) {
 
         return complaintService.getComplaintById(id);
+    }
+    
+    @GetMapping("/{id}/updates")
+    public List<ComplaintUpdate> getComplaintUpdates(@PathVariable Long id) {
+
+        Complaint complaint = complaintService.getComplaintById(id);
+
+        return complaintUpdateService.getComplaintUpdates(complaint);
     }
 }

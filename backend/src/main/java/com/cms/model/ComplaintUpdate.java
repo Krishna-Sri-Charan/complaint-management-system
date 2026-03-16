@@ -23,4 +23,6 @@ public class ComplaintUpdate {
     @ManyToOne
     private Complaint complaint;
 
+    @ManyToOne
+    private User updatedBy;
 }
