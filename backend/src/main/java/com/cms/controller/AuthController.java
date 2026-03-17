@@ -7,6 +7,7 @@ import com.cms.model.User;
 import com.cms.service.AuthService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -18,6 +19,9 @@ public class AuthController {
     @Autowired
     private AuthService authService;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    
     @PostMapping("/register")
     public User register(@RequestBody RegisterRequest request) {
 
@@ -37,7 +41,7 @@ public class AuthController {
         Optional<User> user = authService.findByEmail(request.getEmail());
 
         if (user.isPresent() &&
-                user.get().getPassword().equals(request.getPassword())) {
+                passwordEncoder.matches(request.getPassword(), user.get().getPassword())) {
 
             return "Login Successful";
         }
