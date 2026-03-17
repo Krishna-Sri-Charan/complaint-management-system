@@ -25,7 +25,7 @@ public class AuthController {
                 .name(request.getName())
                 .email(request.getEmail())
                 .password(request.getPassword())
-                .role(Role.USER)
+                .role(request.getRole())
                 .build();
 
         return authService.register(user);
