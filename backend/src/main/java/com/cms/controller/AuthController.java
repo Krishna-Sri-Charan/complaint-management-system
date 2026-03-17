@@ -6,6 +6,8 @@ import com.cms.model.Role;
 import com.cms.model.User;
 import com.cms.service.AuthService;
 
+import jakarta.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +25,7 @@ public class AuthController {
     private PasswordEncoder passwordEncoder;
     
     @PostMapping("/register")
-    public User register(@RequestBody RegisterRequest request) {
+    public User register(@Valid @RequestBody RegisterRequest request) {
 
         User user = User.builder()
                 .name(request.getName())
@@ -36,7 +38,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody LoginRequest request) {
+    public String login(@Valid @RequestBody LoginRequest request) {
 
         Optional<User> user = authService.findByEmail(request.getEmail());
 

@@ -6,6 +6,8 @@ import com.cms.model.ComplaintUpdate;
 import com.cms.service.ComplaintService;
 import com.cms.service.ComplaintUpdateService;
 
+import jakarta.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +24,7 @@ public class ComplaintController {
     private ComplaintUpdateService complaintUpdateService;
 
     @PostMapping
-    public Complaint createComplaint(@RequestBody ComplaintRequest request,
+    public Complaint createComplaint(@Valid @RequestBody ComplaintRequest request,
                                      @RequestParam Long userId) {
 
         return complaintService.createComplaint(request, userId);
