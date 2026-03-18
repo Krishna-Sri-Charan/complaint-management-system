@@ -19,6 +19,7 @@ public class SecurityConfig {
                     .requestMatchers("/api/v1/auth/**").permitAll()
                     .requestMatchers("/api/v1/complaints/**").permitAll()
                     .requestMatchers("/api/v1/admin/**").permitAll()
+                    .requestMatchers("/api/v1/technician/**").permitAll()
                     .anyRequest().authenticated()
             )
             .httpBasic(httpBasic -> {});

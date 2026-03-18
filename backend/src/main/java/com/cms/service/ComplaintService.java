@@ -113,4 +113,12 @@ public class ComplaintService {
         return complaintRepository.findAll(pageable);
 
     }
+    
+    public List<Complaint> getTechnicianComplaints(Long technicianId) {
+
+        User technician = userRepository.findById(technicianId)
+                .orElseThrow(() -> new ResourceNotFoundException("Technician not found"));
+
+        return complaintRepository.findByTechnician(technician);
+    }
 }
