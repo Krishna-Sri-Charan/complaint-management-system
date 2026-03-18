@@ -1,5 +1,6 @@
 package com.cms.controller;
 
+import com.cms.dto.ApiResponse;
 import com.cms.dto.ComplaintRequest;
 import com.cms.model.Complaint;
 import com.cms.model.ComplaintUpdate;
@@ -24,16 +25,26 @@ public class ComplaintController {
     private ComplaintUpdateService complaintUpdateService;
 
     @PostMapping
-    public Complaint createComplaint(@Valid @RequestBody ComplaintRequest request,
-                                     @RequestParam Long userId) {
+    public ApiResponse<Complaint> createComplaint(@Valid @RequestBody ComplaintRequest request,
+                                                  @RequestParam Long userId) {
 
-        return complaintService.createComplaint(request, userId);
+        Complaint complaint = complaintService.createComplaint(request, userId);
+
+        return ApiResponse.<Complaint>builder()
+                .success(true)
+                .message("Complaint created successfully")
+                .data(complaint)
+                .build();
     }
 
     @GetMapping("/my")
-    public List<Complaint> getUserComplaints(@RequestParam Long userId) {
+    public ApiResponse<List<Complaint>> getUserComplaints(@RequestParam Long userId) {
 
-        return complaintService.getUserComplaints(userId);
+        return ApiResponse.<List<Complaint>>builder()
+                .success(true)
+                .message("Complaints fetched successfully")
+                .data(complaintService.getUserComplaints(userId))
+                .build();
     }
 
     @GetMapping("/{id}")

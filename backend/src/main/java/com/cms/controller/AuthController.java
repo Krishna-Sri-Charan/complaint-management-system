@@ -1,5 +1,6 @@
 package com.cms.controller;
 
+import com.cms.dto.ApiResponse;
 import com.cms.dto.LoginRequest;
 import com.cms.dto.RegisterRequest;
 import com.cms.model.Role;
@@ -25,7 +26,7 @@ public class AuthController {
     private PasswordEncoder passwordEncoder;
     
     @PostMapping("/register")
-    public User register(@Valid @RequestBody RegisterRequest request) {
+    public ApiResponse<User> register(@Valid @RequestBody RegisterRequest request) {
 
         User user = User.builder()
                 .name(request.getName())
@@ -34,20 +35,34 @@ public class AuthController {
                 .role(request.getRole())
                 .build();
 
-        return authService.register(user);
+        User savedUser = authService.register(user);
+
+        return ApiResponse.<User>builder()
+                .success(true)
+                .message("User registered successfully")
+                .data(savedUser)
+                .build();
     }
 
     @PostMapping("/login")
-    public String login(@Valid @RequestBody LoginRequest request) {
+    public ApiResponse<String> login(@Valid @RequestBody LoginRequest request) {
 
         Optional<User> user = authService.findByEmail(request.getEmail());
 
         if (user.isPresent() &&
                 passwordEncoder.matches(request.getPassword(), user.get().getPassword())) {
 
-            return "Login Successful";
+            return ApiResponse.<String>builder()
+                    .success(true)
+                    .message("Login successful")
+                    .data("SUCCESS")
+                    .build();
         }
 
-        return "Invalid Credentials";
+        return ApiResponse.<String>builder()
+                .success(false)
+                .message("Invalid credentials")
+                .data(null)
+                .build();
     }
 }
