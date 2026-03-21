@@ -10,6 +10,9 @@ import com.cms.service.ComplaintUpdateService;
 import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,6 +27,7 @@ public class ComplaintController {
     @Autowired
     private ComplaintUpdateService complaintUpdateService;
 
+    @PreAuthorize("hasRole('USER')")
     @PostMapping
     public ApiResponse<Complaint> createComplaint(@Valid @RequestBody ComplaintRequest request,
                                                   @RequestParam Long userId) {
@@ -37,6 +41,7 @@ public class ComplaintController {
                 .build();
     }
 
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/my")
     public ApiResponse<List<Complaint>> getUserComplaints(@RequestParam Long userId) {
 
@@ -59,5 +64,15 @@ public class ComplaintController {
         Complaint complaint = complaintService.getComplaintById(id);
 
         return complaintUpdateService.getComplaintUpdates(complaint);
+    }
+    
+    @GetMapping
+    public ApiResponse<Page<Complaint>> getAllComplaints(Pageable pageable) {
+
+        return ApiResponse.<Page<Complaint>>builder()
+                .success(true)
+                .message("All complaints fetched")
+                .data(complaintService.getAllComplaints(pageable))
+                .build();
     }
 }

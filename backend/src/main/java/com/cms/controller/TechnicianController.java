@@ -8,6 +8,7 @@ import com.cms.service.ComplaintUpdateService;
 import com.cms.repository.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,12 +26,14 @@ public class TechnicianController {
     @Autowired
     private UserRepository userRepository;
 
+    @PreAuthorize("hasRole('TECHNICIAN')")
     @GetMapping("/complaints")
     public List<Complaint> getAssignedComplaints(@RequestParam Long technicianId) {
 
         return complaintService.getTechnicianComplaints(technicianId);
     }
 
+    @PreAuthorize("hasRole('TECHNICIAN')")
     @PutMapping("/update-status")
     public Complaint updateStatus(@RequestParam Long complaintId,
                                   @RequestParam ComplaintStatus status) {
@@ -38,6 +41,7 @@ public class TechnicianController {
         return complaintService.updateStatus(complaintId, status);
     }
 
+    @PreAuthorize("hasRole('TECHNICIAN')")
     @PostMapping("/add-update")
     public String addUpdate(@RequestParam Long complaintId,
                             @RequestParam Long technicianId,
