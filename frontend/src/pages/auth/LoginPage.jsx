@@ -1,9 +1,12 @@
 import { useState } from "react";
 import API from "../../services/api";
+import { useNavigate } from "react-router-dom";
 
 function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const navigate = useNavigate();
 
   const handleLogin = async () => {
     try {
@@ -39,6 +42,13 @@ function LoginPage() {
       <br /><br />
 
       <button onClick={handleLogin}>Login</button>
+      
+      <p>
+        Don't have an account?{" "}
+        <span onClick={() => navigate("/register")}>
+            Register
+        </span>
+      </p>
     </div>
   );
 }
