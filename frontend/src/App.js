@@ -4,6 +4,7 @@ import RegisterPage from "./pages/auth/RegisterPage";
 import UserDashboard from "./pages/user/UserDashboard";
 import CreateComplaint from "./pages/user/CreateComplaint";
 import MyComplaints from "./pages/user/MyComplaints";
+import AdminDashboard from "./pages/admin/AdminDashboard";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/dashboard" element={<UserDashboard />} />
         <Route path="/create-complaint" element={<CreateComplaint />} />
         <Route path="/my-complaints" element={<MyComplaints />} />
+        <Route path="/admin-dashboard" element={<AdminDashboard />} />
       </Routes>
     </BrowserRouter>
   );

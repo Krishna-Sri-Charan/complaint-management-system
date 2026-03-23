@@ -53,6 +53,10 @@ function LoginPage() {
             Register
         </span>
       </p>
+
+      <button onClick={() => navigate("/admin-dashboard")}>
+        Go to Admin Dashboard
+      </button>
     </div>
   );
 }
