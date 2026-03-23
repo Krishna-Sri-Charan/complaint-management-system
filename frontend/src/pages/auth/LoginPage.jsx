@@ -16,7 +16,11 @@ function LoginPage() {
       });
 
       alert(res.data.message);
-      console.log(res.data);
+
+      // Save user email (temporary, later JWT)
+      localStorage.setItem("userEmail", email);
+
+      navigate("/dashboard");
 
     } catch (error) {
       alert("Login failed");
