@@ -54,6 +54,11 @@ function LoginPage() {
         </span>
       </p>
 
+      <button onClick={() => navigate("/technician-dashboard")}>
+        Go to Technician Dashboard
+      </button>
+      <br /><br />
+
       <button onClick={() => navigate("/admin-dashboard")}>
         Go to Admin Dashboard
       </button>
