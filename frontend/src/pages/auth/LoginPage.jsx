@@ -3,18 +3,48 @@ import { TextField, Button, Box, Typography, Paper, Link, Divider, Stack } from 
 import { Login as LoginIcon, ChevronRight } from "@mui/icons-material";
 import API from "../../services/api";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleLogin = async () => {
     try {
-      const res = await API.post("/auth/login", { email, password });
-      localStorage.setItem("userEmail", email);
-      navigate("/dashboard");
+
+      const res = await API.post("/auth/login", {
+        email,
+        password,
+      });
+
+      // TEMP ROLE DETECTION
+      let role = "USER";
+
+      if (email.includes("admin")) {
+        role = "ADMIN";
+      } else if (email.includes("tech")) {
+        role = "TECHNICIAN";
+      }
+
+      const userData = {
+        email,
+        role,
+      };
+
+      login(userData);
+
+      if (role === "ADMIN") {
+        navigate("/admin-dashboard");
+      } else if (role === "TECHNICIAN") {
+        navigate("/technician-dashboard");
+      } else {
+        navigate("/dashboard");
+      }
+
     } catch (error) {
+
       alert("Login failed. Please check your credentials.");
     }
   };

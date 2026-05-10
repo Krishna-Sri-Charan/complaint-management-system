@@ -9,21 +9,40 @@ import {
   Engineering, Logout 
 } from "@mui/icons-material";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const drawerWidth = 260; // Slightly wider for better text breathing room
 
 function Layout({ children }) {
   const navigate = useNavigate();
   const location = useLocation();
+  const { user, logout } = useAuth();
 
   // Navigation items array for cleaner code
-  const menuItems = [
-    { text: "Dashboard", icon: <Dashboard />, path: "/dashboard" },
-    { text: "Create Complaint", icon: <AddCircle />, path: "/create-complaint" },
-    { text: "My Complaints", icon: <ListAlt />, path: "/my-complaints" },
-    { text: "Admin", icon: <AdminPanelSettings />, path: "/admin-dashboard" },
-    { text: "Technician", icon: <Engineering />, path: "/technician-dashboard" },
-  ];
+  const menuItems = [];
+
+  if (user?.role === "USER") {
+
+    menuItems.push(
+      { text: "Dashboard", icon: <Dashboard />, path: "/dashboard" },
+      { text: "Create Complaint", icon: <AddCircle />, path: "/create-complaint" },
+      { text: "My Complaints", icon: <ListAlt />, path: "/my-complaints" }
+    );
+  }
+
+  if (user?.role === "ADMIN") {
+
+    menuItems.push(
+      { text: "Admin Dashboard", icon: <AdminPanelSettings />, path: "/admin-dashboard" }
+    );
+  }
+
+  if (user?.role === "TECHNICIAN") {
+
+    menuItems.push(
+      { text: "Technician Dashboard", icon: <Engineering />, path: "/technician-dashboard" }
+    );
+  }
 
   return (
     <Box sx={{ display: "flex", bgcolor: "#f4f7fe", minHeight: "100vh" }}>
