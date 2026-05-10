@@ -10,6 +10,7 @@ import {
 } from "@mui/icons-material";
 import API from "../../services/api";
 import Layout from "../../components/Layout";
+import DashboardAnalytics from "../../components/DashboardAnalytics";
 
 function AdminDashboard() {
   const [complaints, setComplaints] = useState([]);
@@ -67,6 +68,8 @@ function AdminDashboard() {
           </Box>
           <Button variant="outlined" startIcon={<FilterList />}>Filter</Button>
         </Stack>
+
+        <DashboardAnalytics />
 
         <Grid container spacing={3}>
           {complaints.map((c) => (

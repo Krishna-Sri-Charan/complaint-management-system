@@ -15,6 +15,7 @@ import {
   HelpOutline 
 } from "@mui/icons-material";
 import Layout from "../../components/Layout";
+import DashboardAnalytics from "../../components/DashboardAnalytics";
 
 function UserDashboard() {
   const navigate = useNavigate();
@@ -52,6 +53,7 @@ function UserDashboard() {
     },
   ];
 
+
   return (
     <Layout>
       <Box sx={{ maxWidth: 1200, margin: "0 auto" }}>
@@ -64,6 +66,7 @@ function UserDashboard() {
             Welcome to your Complaint Management portal. What would you like to do today?
           </Typography>
         </Box>
+        
 
         {/* Action Grid */}
         <Grid container spacing={3}>
@@ -108,6 +111,8 @@ function UserDashboard() {
             </Grid>
           ))}
         </Grid>
+
+        <DashboardAnalytics />
 
         {/* Quick Stats Section (Placeholder for Vibe) */}
         <Box sx={{ mt: 6, p: 3, borderRadius: 4, bgcolor: "#ffffff", border: "1px solid #e2e8f0" }}>
