@@ -20,6 +20,9 @@ import {
   Stack,
 } from "@mui/material";
 
+import { useEffect, useState } from "react";
+import API from "../services/api";
+
 const statusData = [
   { name: "Open", value: 8 },
   { name: "In Progress", value: 5 },
@@ -38,6 +41,28 @@ const COLORS = ["#6366F1", "#F59E0B", "#10B981"];
 
 function DashboardAnalytics() {
 
+  const [stats, setStats] = useState({
+    totalComplaints: 0,
+    resolvedComplaints: 0,
+    pendingComplaints: 0,
+  });
+
+  useEffect(() => {
+    fetchStats();
+  }, []);
+
+  const fetchStats = async () => {
+    try {
+
+      const res = await API.get("/analytics/dashboard");
+
+      setStats(res.data.data);
+
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <Box sx={{ mt: 5 }}>
 
@@ -53,7 +78,7 @@ function DashboardAnalytics() {
               </Typography>
 
               <Typography variant="h4" fontWeight={800}>
-                25
+                {stats.totalComplaints}
               </Typography>
             </CardContent>
           </Card>
@@ -71,7 +96,7 @@ function DashboardAnalytics() {
                 fontWeight={800}
                 color="#10B981"
               >
-                12
+                {stats.resolvedComplaints}
               </Typography>
             </CardContent>
           </Card>
@@ -89,7 +114,7 @@ function DashboardAnalytics() {
                 fontWeight={800}
                 color="#F59E0B"
               >
-                13
+                {stats.pendingComplaints}
               </Typography>
             </CardContent>
           </Card>
