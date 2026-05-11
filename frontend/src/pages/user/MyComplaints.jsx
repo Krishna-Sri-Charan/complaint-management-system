@@ -81,6 +81,17 @@ function MyComplaints() {
                             variant="outlined"
                             sx={{ fontWeight: 600, borderRadius: 1 }}
                           />
+                          {c.attachmentUrl && (
+                            <img
+                              src={`http://localhost:8080/uploads/${c.attachmentUrl}`}
+                              alt="attachment"
+                              width="200"
+                              style={{
+                                marginTop: "10px",
+                                borderRadius: "10px",
+                              }}
+                            />
+                          )}
                         </Stack>
                         <Typography variant="h6" sx={{ fontWeight: 700, mb: 0.5 }}>
                           {c.title}

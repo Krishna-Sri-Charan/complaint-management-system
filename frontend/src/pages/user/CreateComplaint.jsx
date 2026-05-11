@@ -15,16 +15,42 @@ function CreateComplaint() {
     description: "",
     priority: "LOW" // Adding a default priority
   });
+  const [file, setFile] = useState(null);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async () => {
+
     try {
-      const res = await API.post("/complaints?userId=1", form);
+
+      const formData = new FormData();
+
+      formData.append("title", form.title);
+      formData.append("description", form.description);
+      formData.append("userId", 1);
+
+      if (file) {
+        formData.append("file", file);
+      }
+
+      const res = await API.post(
+        "/complaints",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      alert(res.data.message);
+
       navigate("/dashboard");
+
     } catch (error) {
+
       alert("Failed to create complaint");
     }
   };
@@ -81,6 +107,11 @@ function CreateComplaint() {
               multiline
               rows={5}
               onChange={handleChange}
+            />
+
+            <input
+              type="file"
+              onChange={(e) => setFile(e.target.files[0])}
             />
 
             <Box sx={{ display: "flex", gap: 2, pt: 2 }}>

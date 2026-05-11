@@ -37,5 +37,7 @@ public class Complaint {
 
     @ManyToOne
     private Category category;
+    
+    private String attachmentUrl;
 
 }

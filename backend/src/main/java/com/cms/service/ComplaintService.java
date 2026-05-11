@@ -13,6 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,20 +34,43 @@ public class ComplaintService {
     @Autowired
     private ComplaintUpdateService complaintUpdateService;
 
-    public Complaint createComplaint(ComplaintRequest request, Long userId) {
+    public Complaint createComplaint(
+            ComplaintRequest request,
+            Long userId,
+            MultipartFile file
+    ) throws Exception {
 
-    	User user = userRepository.findById(userId)
-    	        .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        String fileName = null;
+
+        if (file != null && !file.isEmpty()) {
+
+            fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+
+            Path uploadPath = Paths.get("uploads");
+
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+
+            Files.copy(
+                    file.getInputStream(),
+                    uploadPath.resolve(fileName)
+            );
+        }
 
         Complaint complaint = Complaint.builder()
                 .title(request.getTitle())
                 .description(request.getDescription())
+                .attachmentUrl(fileName)
                 .status(ComplaintStatus.OPEN)
                 .priority(ComplaintPriority.MEDIUM)
                 .createdAt(LocalDateTime.now())
                 .user(user)
                 .build();
-        
+
         Complaint savedComplaint = complaintRepository.save(complaint);
 
         complaintUpdateService.addUpdate(
