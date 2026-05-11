@@ -6,10 +6,13 @@ import {
 import { MoreVert, ErrorOutline, CheckCircleOutline, PendingActions } from "@mui/icons-material";
 import API from "../../services/api";
 import Layout from "../../components/Layout";
+import { Button } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 function MyComplaints() {
   const [complaints, setComplaints] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchComplaints();
@@ -85,6 +88,13 @@ function MyComplaints() {
                         <Typography variant="body2" color="textSecondary" sx={{ maxWidth: 600 }}>
                           {c.description}
                         </Typography>
+                        <Button
+                          variant="outlined"
+                          sx={{ mt: 2 }}
+                          onClick={() => navigate(`/complaint/${c.id}/timeline`)}
+                        >
+                          View Timeline
+                        </Button>
                       </Box>
                       <IconButton><MoreVert /></IconButton>
                     </CardContent>
