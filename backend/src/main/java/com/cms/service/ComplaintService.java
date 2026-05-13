@@ -149,4 +149,18 @@ public class ComplaintService {
 
         return complaintRepository.findByTechnician(technician);
     }
+    
+    public List<Complaint> searchComplaints(
+            String keyword,
+            ComplaintStatus status,
+            ComplaintPriority priority
+    ) {
+
+        return complaintRepository
+                .findByTitleContainingIgnoreCaseAndStatusAndPriority(
+                        keyword,
+                        status,
+                        priority
+                );
+    }
 }

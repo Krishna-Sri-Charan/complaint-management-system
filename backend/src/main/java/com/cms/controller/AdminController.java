@@ -1,6 +1,8 @@
 package com.cms.controller;
 
+import com.cms.dto.ApiResponse;
 import com.cms.model.Complaint;
+import com.cms.model.ComplaintPriority;
 import com.cms.service.ComplaintService;
 import com.cms.model.ComplaintStatus;
 
@@ -43,4 +45,23 @@ public class AdminController {
         return complaintService.updateStatus(complaintId, status);
     }
 
+    @GetMapping("/search")
+    public ApiResponse<List<Complaint>> searchComplaints(
+            @RequestParam String keyword,
+            @RequestParam ComplaintStatus status,
+            @RequestParam ComplaintPriority priority
+    ) {
+
+        return ApiResponse.<List<Complaint>>builder()
+                .success(true)
+                .message("Complaints fetched")
+                .data(
+                        complaintService.searchComplaints(
+                                keyword,
+                                status,
+                                priority
+                        )
+                )
+                .build();
+    }
 }

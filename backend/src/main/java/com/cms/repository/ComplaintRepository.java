@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.cms.model.Complaint;
 import com.cms.model.ComplaintStatus;
 import com.cms.model.User;
+import com.cms.model.ComplaintPriority;
+import com.cms.model.ComplaintStatus;
 
 public interface ComplaintRepository extends JpaRepository<Complaint, Long> {
 
@@ -16,4 +18,9 @@ public interface ComplaintRepository extends JpaRepository<Complaint, Long> {
     
     long countByStatus(ComplaintStatus status);
 
+    List<Complaint> findByTitleContainingIgnoreCaseAndStatusAndPriority(
+            String title,
+            ComplaintStatus status,
+            ComplaintPriority priority
+    );
 }
