@@ -16,6 +16,7 @@ function CreateComplaint() {
     priority: "LOW" // Adding a default priority
   });
   const [file, setFile] = useState(null);
+  const user = JSON.parse(localStorage.getItem("cms_user"));
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -29,7 +30,7 @@ function CreateComplaint() {
 
       formData.append("title", form.title);
       formData.append("description", form.description);
-      formData.append("userId", 1);
+      formData.append("userId", user.id);
 
       if (file) {
         formData.append("file", file);

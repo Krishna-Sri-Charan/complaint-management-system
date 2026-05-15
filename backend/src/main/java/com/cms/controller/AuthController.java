@@ -2,6 +2,7 @@ package com.cms.controller;
 
 import com.cms.dto.ApiResponse;
 import com.cms.dto.LoginRequest;
+import com.cms.dto.LoginResponse;
 import com.cms.dto.RegisterRequest;
 import com.cms.model.Role;
 import com.cms.model.User;
@@ -45,21 +46,38 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ApiResponse<String> login(@Valid @RequestBody LoginRequest request) {
+    public ApiResponse<LoginResponse> login(
+            @Valid @RequestBody LoginRequest request
+    ) {
 
-        Optional<User> user = authService.findByEmail(request.getEmail());
+        Optional<User> user =
+                authService.findByEmail(request.getEmail());
 
-        if (user.isPresent() &&
-                passwordEncoder.matches(request.getPassword(), user.get().getPassword())) {
+        if (
+                user.isPresent()
+                        &&
+                passwordEncoder.matches(
+                        request.getPassword(),
+                        user.get().getPassword()
+                )
+        ) {
 
-            return ApiResponse.<String>builder()
+            LoginResponse response =
+                    LoginResponse.builder()
+                            .id(user.get().getId())
+                            .name(user.get().getName())
+                            .email(user.get().getEmail())
+                            .role(user.get().getRole())
+                            .build();
+
+            return ApiResponse.<LoginResponse>builder()
                     .success(true)
                     .message("Login successful")
-                    .data("SUCCESS")
+                    .data(response)
                     .build();
         }
 
-        return ApiResponse.<String>builder()
+        return ApiResponse.<LoginResponse>builder()
                 .success(false)
                 .message("Invalid credentials")
                 .data(null)

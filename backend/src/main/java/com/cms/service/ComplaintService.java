@@ -33,6 +33,9 @@ public class ComplaintService {
     
     @Autowired
     private ComplaintUpdateService complaintUpdateService;
+    
+    @Autowired
+    private EmailService emailService;
 
     public Complaint createComplaint(
             ComplaintRequest request,
@@ -78,7 +81,14 @@ public class ComplaintService {
                 "Complaint created",
                 user
         );
-
+        
+        emailService.sendEmail(
+                user.getEmail(),
+                "Complaint Created Successfully",
+                "Your complaint '" + complaint.getTitle()
+                        + "' has been registered successfully."
+        );
+        
         return savedComplaint;
     }
 
@@ -116,7 +126,14 @@ public class ComplaintService {
                 "Technician assigned",
                 technician
         );
-
+        
+        emailService.sendEmail(
+                complaint.getUser().getEmail(),
+                "Technician Assigned",
+                "Your complaint has been assigned to technician "
+                        + technician.getName()
+        );
+        
         return complaintRepository.save(complaint);
     }
     
@@ -132,6 +149,16 @@ public class ComplaintService {
                 "Status changed to " + status,
                 complaint.getUser()
         );
+        
+        if (status == ComplaintStatus.RESOLVED) {
+
+            emailService.sendEmail(
+                    complaint.getUser().getEmail(),
+                    "Complaint Resolved",
+                    "Your complaint '" + complaint.getTitle()
+                            + "' has been resolved."
+            );
+        }
 
         return complaintRepository.save(complaint);
     }

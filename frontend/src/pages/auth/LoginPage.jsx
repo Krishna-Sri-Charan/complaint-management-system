@@ -12,6 +12,7 @@ function LoginPage() {
   const { login } = useAuth();
 
   const handleLogin = async () => {
+    
     try {
 
       const res = await API.post("/auth/login", {
@@ -19,27 +20,20 @@ function LoginPage() {
         password,
       });
 
-      // TEMP ROLE DETECTION
-      let role = "USER";
-
-      if (email.includes("admin")) {
-        role = "ADMIN";
-      } else if (email.includes("tech")) {
-        role = "TECHNICIAN";
-      }
-
-      const userData = {
-        email,
-        role,
-      };
+      const userData = res.data.data;
 
       login(userData);
 
-      if (role === "ADMIN") {
+      if (userData.role === "ADMIN") {
+
         navigate("/admin-dashboard");
-      } else if (role === "TECHNICIAN") {
+
+      } else if (userData.role === "TECHNICIAN") {
+
         navigate("/technician-dashboard");
+
       } else {
+
         navigate("/dashboard");
       }
 

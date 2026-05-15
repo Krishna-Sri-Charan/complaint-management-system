@@ -13,6 +13,7 @@ function MyComplaints() {
   const [complaints, setComplaints] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem("cms_user"));
 
   useEffect(() => {
     fetchComplaints();
@@ -20,7 +21,7 @@ function MyComplaints() {
 
   const fetchComplaints = async () => {
     try {
-      const res = await API.get("/complaints/my?userId=1");
+      const res = await API.get(`/complaints/my?userId=${user.id}`);
       setComplaints(res.data.data);
       setLoading(false);
     } catch (error) {

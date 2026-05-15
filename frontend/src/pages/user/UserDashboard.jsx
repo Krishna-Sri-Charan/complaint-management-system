@@ -19,7 +19,9 @@ import DashboardAnalytics from "../../components/DashboardAnalytics";
 
 function UserDashboard() {
   const navigate = useNavigate();
-  const userEmail = localStorage.getItem("userEmail") || "User";
+  const user = JSON.parse(localStorage.getItem("cms_user"));
+
+  const userName = user?.name || "User";
 
   // Data for the dashboard cards
   const actions = [
@@ -60,7 +62,7 @@ function UserDashboard() {
         {/* Welcome Header */}
         <Box sx={{ mb: 5 }}>
           <Typography variant="h4" sx={{ fontWeight: 800, color: "#1e293b" }}>
-            Hello, {userEmail.split('@')[0]}! 👋
+            Hello, {userName}! 👋
           </Typography>
           <Typography variant="body1" color="textSecondary">
             Welcome to your Complaint Management portal. What would you like to do today?
