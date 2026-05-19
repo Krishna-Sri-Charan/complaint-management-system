@@ -6,6 +6,7 @@ import com.cms.dto.LoginResponse;
 import com.cms.dto.RegisterRequest;
 import com.cms.model.Role;
 import com.cms.model.User;
+import com.cms.security.JwtUtil;
 import com.cms.service.AuthService;
 
 import jakarta.validation.Valid;
@@ -25,6 +26,9 @@ public class AuthController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+    
+    @Autowired
+    private JwtUtil jwtUtil;
     
     @PostMapping("/register")
     public ApiResponse<User> register(@Valid @RequestBody RegisterRequest request) {
@@ -53,6 +57,11 @@ public class AuthController {
         Optional<User> user =
                 authService.findByEmail(request.getEmail());
 
+        String token =
+                jwtUtil.generateToken(
+                        user.get().getEmail()
+                );
+        
         if (
                 user.isPresent()
                         &&
@@ -68,6 +77,7 @@ public class AuthController {
                             .name(user.get().getName())
                             .email(user.get().getEmail())
                             .role(user.get().getRole())
+                            .token(token)
                             .build();
 
             return ApiResponse.<LoginResponse>builder()
@@ -76,6 +86,7 @@ public class AuthController {
                     .data(response)
                     .build();
         }
+        
 
         return ApiResponse.<LoginResponse>builder()
                 .success(false)
