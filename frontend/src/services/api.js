@@ -26,4 +26,23 @@ API.interceptors.request.use(
   }
 );
 
+API.interceptors.response.use(
+
+  (response) => response,
+
+  (error) => {
+
+    if (error.response?.status === 401) {
+
+      localStorage.removeItem("cms_user");
+
+      localStorage.removeItem("cms_token");
+
+      window.location.href = "/";
+    }
+
+    return Promise.reject(error);
+  }
+);
+
 export default API;

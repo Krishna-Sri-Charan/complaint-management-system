@@ -1,5 +1,6 @@
 package com.cms.config;
 
+import com.cms.security.JwtAuthenticationEntryPoint;
 import com.cms.security.JwtFilter;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,9 @@ public class SecurityConfig {
 
     @Autowired
     private JwtFilter jwtFilter;
+    
+    @Autowired
+    private JwtAuthenticationEntryPoint jwtEntryPoint;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -64,6 +68,13 @@ public class SecurityConfig {
                                 SessionCreationPolicy.STATELESS
                         )
                 )
+                
+                .exceptionHandling(exception ->
+
+		                exception.authenticationEntryPoint(
+		                        jwtEntryPoint
+		                )
+		        )
 
                 .authorizeHttpRequests(auth -> auth
 
