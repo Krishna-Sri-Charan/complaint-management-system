@@ -63,6 +63,20 @@ public class ComplaintService {
                     uploadPath.resolve(fileName)
             );
         }
+        
+        String finalPriority =
+
+        	    request.getAiPriority() != null
+        	            &&
+        	    !request.getAiPriority().isBlank()
+
+        	    ?
+
+        	    request.getAiPriority()
+
+        	    :
+
+        	    request.getUserPriority();
 
         Complaint complaint = Complaint.builder()
                 .title(request.getTitle())
@@ -71,24 +85,12 @@ public class ComplaintService {
                 .status(ComplaintStatus.OPEN)
                 .aiCategory(request.getAiCategory())
                 .priority(
-
-                	    request.getPriority() != null
-                	            &&
-                	    !request.getPriority().isBlank()
-
-                	    ?
-
-                	    ComplaintPriority.valueOf(
-
-                	            request.getPriority()
-                	                    .trim()
-                	                    .toUpperCase()
-                	    )
-
-                	    :
-
-                	    ComplaintPriority.MEDIUM
-                	)
+            	    ComplaintPriority.valueOf(
+            	            finalPriority
+            	                    .trim()
+            	                    .toUpperCase()
+            	    )
+            	)
                 .createdAt(LocalDateTime.now())
                 .user(user)
                 .build();

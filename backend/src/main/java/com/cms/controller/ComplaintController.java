@@ -40,7 +40,10 @@ public class ComplaintController {
             String aiCategory,
 
             @RequestParam(required = false)
-            String priority,
+            String aiPriority,
+
+            @RequestParam
+            String userPriority,
 
             @RequestParam(required = false)
             MultipartFile file,
@@ -58,7 +61,9 @@ public class ComplaintController {
 
         request.setAiCategory(aiCategory);
 
-        request.setPriority(priority);
+        request.setAiPriority(aiPriority);
+        
+        request.setUserPriority(userPriority);
         
         Complaint complaint =
 

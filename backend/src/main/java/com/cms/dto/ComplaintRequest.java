@@ -9,7 +9,9 @@ public class ComplaintRequest {
 
     private String description;
     
+    private String userPriority;
+    
     private String aiCategory;
 
-    private String priority;
+    private String aiPriority;
 }

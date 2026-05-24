@@ -1,6 +1,7 @@
 package com.cms.controller;
 
 import com.cms.dto.AiComplaintResponse;
+import com.cms.dto.AiSuggestionResponse;
 import com.cms.dto.ApiResponse;
 
 import com.cms.service.AiService;
@@ -29,6 +30,27 @@ public class AiController {
 
                 .data(
                         aiService.analyzeComplaint(
+                                complaint
+                        )
+                )
+
+                .build();
+    }
+    
+    @PostMapping("/suggestions")
+    public ApiResponse<AiSuggestionResponse> generateSuggestions(
+            @RequestBody String complaint
+    ) {
+
+        return ApiResponse
+                .<AiSuggestionResponse>builder()
+
+                .success(true)
+
+                .message("AI suggestions generated")
+
+                .data(
+                        aiService.generateSuggestions(
                                 complaint
                         )
                 )

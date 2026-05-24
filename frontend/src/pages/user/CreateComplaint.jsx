@@ -19,6 +19,8 @@ function CreateComplaint() {
   const [aiCategory, setAiCategory] = useState("");
   const [priority, setPriority] = useState("");
   const [aiLoading, setAiLoading] = useState(false);
+  const [suggestions, setSuggestions] = useState("");
+  const [recommendedTeam, setRecommendedTeam] = useState("");
   const user = JSON.parse(localStorage.getItem("cms_user"));
 
   const handleChange = (e) => {
@@ -34,7 +36,8 @@ function CreateComplaint() {
       formData.append("title", form.title);
       formData.append("description", form.description);
       formData.append("aiCategory", aiCategory);
-      formData.append("priority", priority);
+      formData.append("aiPriority", priority);
+      formData.append("userPriority",form.priority);
 
       if (file) {
         formData.append("file", file);
@@ -104,6 +107,34 @@ function CreateComplaint() {
     } finally {
 
       setAiLoading(false);
+    }
+  };
+
+  const generateSuggestions = async () => {
+
+    try {
+
+      const res = await API.post(
+        "/ai/suggestions",
+        form.description,
+        {
+          headers: {
+            "Content-Type": "text/plain",
+          },
+        }
+      );
+
+      setSuggestions(
+        res.data.data.suggestions
+      );
+
+      setRecommendedTeam(
+        res.data.data.recommendedTeam
+      );
+
+    } catch (error) {
+
+      console.log(error);
     }
   };
 
@@ -210,6 +241,62 @@ function CreateComplaint() {
 
               </Box>
             )}
+
+            <Button
+              variant="outlined"
+              sx={{
+                ml: 2,
+                mt: 2,
+                mb: 3,
+                borderRadius: 2,
+              }}
+              onClick={generateSuggestions}
+            >
+
+              Get AI Suggestions
+
+            </Button>
+
+            {suggestions && (
+
+            <Box
+              sx={{
+                p: 3,
+                borderRadius: 3,
+                bgcolor: "#ECFDF5",
+                border: "1px solid #A7F3D0",
+                mb: 3,
+              }}
+            >
+
+              <Typography
+                variant="subtitle1"
+                fontWeight={700}
+                mb={1}
+              >
+                AI Troubleshooting Suggestions
+              </Typography>
+
+              <Typography
+                sx={{
+                  whiteSpace: "pre-line",
+                }}
+              >
+                {suggestions}
+              </Typography>
+
+              <Typography
+                mt={2}
+                fontWeight={700}
+                color="#047857"
+              >
+                Recommended Team:
+                {" "}
+                {recommendedTeam}
+              </Typography>
+
+            </Box>
+          )}
 
             <input
               type="file"
