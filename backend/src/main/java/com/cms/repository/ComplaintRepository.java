@@ -3,12 +3,12 @@ package com.cms.repository;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import com.cms.model.Complaint;
 import com.cms.model.ComplaintStatus;
 import com.cms.model.User;
 import com.cms.model.ComplaintPriority;
-import com.cms.model.ComplaintStatus;
 
 public interface ComplaintRepository extends JpaRepository<Complaint, Long> {
 
@@ -23,4 +23,11 @@ public interface ComplaintRepository extends JpaRepository<Complaint, Long> {
             ComplaintStatus status,
             ComplaintPriority priority
     );
+    
+    @Query("""
+    	    SELECT MONTH(c.createdAt), COUNT(c)
+    	    FROM Complaint c
+    	    GROUP BY MONTH(c.createdAt)
+    	""")
+    	List<Object[]> getMonthlyComplaintStats();
 }

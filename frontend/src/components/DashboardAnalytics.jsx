@@ -32,20 +32,6 @@ import {
 import { useEffect, useState } from "react";
 import API from "../services/api";
 
-const statusData = [
-  { name: "Open", value: 8 },
-  { name: "In Progress", value: 5 },
-  { name: "Resolved", value: 12 },
-];
-
-const monthlyData = [
-  { month: "Jan", complaints: 4 },
-  { month: "Feb", complaints: 7 },
-  { month: "Mar", complaints: 5 },
-  { month: "Apr", complaints: 10 },
-  { month: "May", complaints: 8 },
-];
-
 const COLORS = ["#6366f1", "#f59e0b", "#10b981"];
 
 // Custom tooltip for bar chart
@@ -103,9 +89,11 @@ function DashboardAnalytics() {
     resolvedComplaints: 0,
     pendingComplaints: 0,
   });
+  const [analytics, setAnalytics] = useState(null);
 
   useEffect(() => {
     fetchStats();
+    fetchAnalytics();
   }, []);
 
   const fetchStats = async () => {
@@ -116,6 +104,41 @@ function DashboardAnalytics() {
       console.log(error);
     }
   };
+
+  const fetchAnalytics = async () => {
+    try {
+      const res = await API.get("/analytics/complaints");
+      setAnalytics(res.data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const statusData = analytics
+  ? [
+      {
+        name: "Open",
+        value: analytics.openComplaints,
+      },
+      {
+        name: "In Progress",
+        value: analytics.inProgressComplaints,
+      },
+      {
+        name: "Resolved",
+        value: analytics.resolvedComplaints,
+      },
+    ]
+  : [];
+
+  const monthlyData = analytics
+    ? Object.entries(
+        analytics.monthlyComplaints
+      ).map(([month, complaints]) => ({
+        month,
+        complaints,
+      }))
+    : [];
 
   const statCards = [
     {

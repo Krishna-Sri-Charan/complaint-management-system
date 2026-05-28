@@ -1,6 +1,7 @@
 package com.cms.controller;
 
 import com.cms.dto.ApiResponse;
+import com.cms.dto.ComplaintAnalyticsResponse;
 import com.cms.dto.DashboardStatsResponse;
 import com.cms.service.AnalyticsService;
 
@@ -21,6 +22,18 @@ public class AnalyticsController {
                 .success(true)
                 .message("Dashboard statistics fetched")
                 .data(analyticsService.getDashboardStats())
+                .build();
+    }
+    
+    @GetMapping("/complaints")
+    public ApiResponse<ComplaintAnalyticsResponse>
+    getComplaintAnalytics() {
+
+        return ApiResponse
+                .<ComplaintAnalyticsResponse>builder()
+                .success(true)
+                .message("Analytics fetched")
+                .data(analyticsService.getComplaintAnalytics())
                 .build();
     }
 }
