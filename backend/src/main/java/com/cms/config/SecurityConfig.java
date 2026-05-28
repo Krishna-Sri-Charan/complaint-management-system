@@ -59,7 +59,7 @@ public class SecurityConfig {
 
         http
 
-                .cors(cors -> {}) // IMPORTANT
+                .cors(cors -> {})
 
                 .csrf(csrf -> csrf.disable())
 
@@ -80,7 +80,6 @@ public class SecurityConfig {
 
                         .requestMatchers(
                                 "/api/v1/auth/**",
-                                "/api/v1/ai/**",
                                 "/ws/**",
                                 "/uploads/**"
                         ).permitAll()

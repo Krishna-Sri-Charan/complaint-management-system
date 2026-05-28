@@ -15,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/technician")
+@PreAuthorize("hasRole('TECHNICIAN')")
 public class TechnicianController {
 
     @Autowired
@@ -26,14 +27,12 @@ public class TechnicianController {
     @Autowired
     private UserRepository userRepository;
 
-    @PreAuthorize("hasRole('TECHNICIAN')")
     @GetMapping("/complaints")
     public List<Complaint> getAssignedComplaints(@RequestParam Long technicianId) {
 
         return complaintService.getTechnicianComplaints(technicianId);
     }
 
-    @PreAuthorize("hasRole('TECHNICIAN')")
     @PutMapping("/update-status")
     public Complaint updateStatus(@RequestParam Long complaintId,
                                   @RequestParam ComplaintStatus status) {
@@ -41,7 +40,6 @@ public class TechnicianController {
         return complaintService.updateStatus(complaintId, status);
     }
 
-    @PreAuthorize("hasRole('TECHNICIAN')")
     @PostMapping("/add-update")
     public String addUpdate(@RequestParam Long complaintId,
                             @RequestParam Long technicianId,

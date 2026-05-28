@@ -21,6 +21,7 @@ import java.security.Principal;
 
 @RestController
 @RequestMapping("/api/v1/complaints")
+@PreAuthorize("hasAnyRole('USER','ADMIN','TECHNICIAN')")
 public class ComplaintController {
 
     @Autowired

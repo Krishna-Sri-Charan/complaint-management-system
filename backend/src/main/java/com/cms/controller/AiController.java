@@ -7,11 +7,12 @@ import com.cms.dto.ApiResponse;
 import com.cms.service.AiService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/ai")
+@PreAuthorize("hasAnyRole('USER','ADMIN','TECHNICIAN')")
 public class AiController {
 
     @Autowired

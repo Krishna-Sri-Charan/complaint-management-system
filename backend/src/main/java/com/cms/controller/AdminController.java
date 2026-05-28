@@ -16,12 +16,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/admin")
+@PreAuthorize("hasRole('ADMIN')")
 public class AdminController {
 
     @Autowired
     private ComplaintService complaintService;
 
-    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/complaints")
     public Page<Complaint> getAllComplaints(Pageable pageable) {
 
@@ -29,7 +29,6 @@ public class AdminController {
 
     }
     
-    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/assign-technician")
     public Complaint assignTechnician(@RequestParam Long complaintId,
                                       @RequestParam Long technicianId) {
@@ -37,7 +36,6 @@ public class AdminController {
         return complaintService.assignTechnician(complaintId, technicianId);
     }
     
-    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/update-status")
     public Complaint updateStatus(@RequestParam Long complaintId,
                                   @RequestParam ComplaintStatus status) {
