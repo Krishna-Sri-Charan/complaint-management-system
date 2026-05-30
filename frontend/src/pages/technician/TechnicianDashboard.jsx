@@ -12,6 +12,7 @@ import {
 } from "@mui/icons-material";
 import API from "../../services/api";
 import Layout from "../../components/Layout";
+import TechnicianDashboardAnalytics from "../../components/TechnicianDashboardAnalytics";
 
 function TechnicianDashboard() {
   const [complaints, setComplaints] = useState([]);
@@ -120,7 +121,7 @@ function TechnicianDashboard() {
             </Box>
           </Stack>
         </Box>
-
+        <TechnicianDashboardAnalytics />
         {/* Content */}
         {complaints.length === 0 ? (
           <Box

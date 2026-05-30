@@ -19,7 +19,7 @@ import {
   ArrowUpward,
 } from "@mui/icons-material";
 import Layout from "../../components/Layout";
-import DashboardAnalytics from "../../components/DashboardAnalytics";
+import UserDashboardAnalytics from "../../components/UserDashboardAnalytics";
 
 function UserDashboard() {
   const navigate = useNavigate();
@@ -170,7 +170,7 @@ function UserDashboard() {
             </Box>
           </Stack>
         </Box>
-
+        <UserDashboardAnalytics />
         {/* Action Grid */}
         <Grid container spacing={3} sx={{ mb: 5 }}>
           {actions.map((action, index) => (
@@ -243,87 +243,6 @@ function UserDashboard() {
             </Grid>
           ))}
         </Grid>
-
-        <DashboardAnalytics />
-
-        {/* System Overview Stats */}
-        <Box
-          sx={{
-            mt: 4,
-            p: { xs: 3, md: 4 },
-            borderRadius: 4,
-            bgcolor: "#ffffff",
-            border: "1px solid #e2e8f0",
-            boxShadow: "0px 4px 20px rgba(0,0,0,0.04)",
-          }}
-        >
-          <Stack direction="row" alignItems="center" spacing={1.5} sx={{ mb: 3 }}>
-            <Typography variant="h6" sx={{ fontWeight: 800, color: "#0f172a" }}>
-              System Overview
-            </Typography>
-            <Chip
-              label="Live"
-              size="small"
-              sx={{
-                bgcolor: "#dcfce7",
-                color: "#16a34a",
-                fontWeight: 700,
-                fontSize: "0.65rem",
-                height: 20,
-                borderRadius: "5px",
-                "& .MuiChip-label": { px: 1 },
-              }}
-            />
-          </Stack>
-
-          <Grid container spacing={3}>
-            {stats.map((stat, i) => (
-              <Grid item xs={12} sm={4} key={i}>
-                <Box
-                  sx={{
-                    p: 2.5,
-                    borderRadius: 3,
-                    bgcolor: stat.bg,
-                    border: `1px solid ${stat.color}22`,
-                    position: "relative",
-                    overflow: "hidden",
-                  }}
-                >
-                  <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 1 }}>
-                    <Typography
-                      variant="caption"
-                      sx={{ color: "#64748b", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", fontSize: "0.65rem" }}
-                    >
-                      {stat.label}
-                    </Typography>
-                    <Box
-                      sx={{
-                        width: 28,
-                        height: 28,
-                        borderRadius: "8px",
-                        bgcolor: `${stat.color}18`,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      {stat.icon}
-                    </Box>
-                  </Stack>
-                  <Typography
-                    variant="h3"
-                    sx={{ fontWeight: 800, color: stat.color, lineHeight: 1, mb: 0.5 }}
-                  >
-                    {stat.value}
-                  </Typography>
-                  <Typography variant="caption" sx={{ color: "#94a3b8", fontSize: "0.72rem" }}>
-                    {stat.trend}
-                  </Typography>
-                </Box>
-              </Grid>
-            ))}
-          </Grid>
-        </Box>
       </Box>
     </Layout>
   );

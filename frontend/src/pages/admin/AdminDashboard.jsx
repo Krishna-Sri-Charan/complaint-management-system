@@ -12,7 +12,7 @@ import {
 } from "@mui/icons-material";
 import API from "../../services/api";
 import Layout from "../../components/Layout";
-import DashboardAnalytics from "../../components/DashboardAnalytics";
+import AdminDashboardAnalytics from "../../components/AdminDashboardAnalytics";
 
 function AdminDashboard() {
   const [complaints, setComplaints] = useState([]);
@@ -132,20 +132,6 @@ function AdminDashboard() {
                 </Typography>
               </Box>
             </Stack>
-            <Tooltip title="Refresh">
-              <IconButton
-                onClick={fetchComplaints}
-                sx={{
-                  bgcolor: "rgba(255,255,255,0.1)",
-                  color: "#fff",
-                  border: "1px solid rgba(255,255,255,0.2)",
-                  borderRadius: "10px",
-                  "&:hover": { bgcolor: "rgba(255,255,255,0.2)" },
-                }}
-              >
-                <RefreshOutlined fontSize="small" />
-              </IconButton>
-            </Tooltip>
           </Stack>
         </Box>
 
@@ -244,7 +230,7 @@ function AdminDashboard() {
           </CardContent>
         </Card>
 
-        <DashboardAnalytics />
+        <AdminDashboardAnalytics />
 
         {/* Complaints List */}
         <Box sx={{ mt: 4 }}>
@@ -290,20 +276,6 @@ function AdminDashboard() {
                       <Grid container alignItems="center" spacing={2}>
                         <Grid item xs={12} md={7}>
                           <Stack direction="row" spacing={2} alignItems="flex-start">
-                            <Avatar
-                              sx={{
-                                width: 42,
-                                height: 42,
-                                bgcolor: "#eef2ff",
-                                color: "#6366f1",
-                                fontWeight: 800,
-                                fontSize: "1rem",
-                                borderRadius: "11px",
-                                flexShrink: 0,
-                              }}
-                            >
-                              {c.title?.charAt(0).toUpperCase()}
-                            </Avatar>
                             <Box>
                               <Stack direction="row" spacing={1} flexWrap="wrap" sx={{ mb: 1 }} gap={0.5}>
                                 <Chip

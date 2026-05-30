@@ -83,7 +83,7 @@ const CustomPieTooltip = ({ active, payload }) => {
   return null;
 };
 
-function DashboardAnalytics() {
+function AdminDashboardAnalytics() {
   const [stats, setStats] = useState({
     totalComplaints: 0,
     resolvedComplaints: 0,
@@ -395,4 +395,4 @@ function DashboardAnalytics() {
   );
 }
 
-export default DashboardAnalytics;
+export default AdminDashboardAnalytics;

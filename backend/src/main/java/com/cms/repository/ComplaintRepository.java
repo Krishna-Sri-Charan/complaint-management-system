@@ -25,9 +25,23 @@ public interface ComplaintRepository extends JpaRepository<Complaint, Long> {
     );
     
     @Query("""
-    	    SELECT MONTH(c.createdAt), COUNT(c)
-    	    FROM Complaint c
-    	    GROUP BY MONTH(c.createdAt)
-    	""")
-    	List<Object[]> getMonthlyComplaintStats();
+	    SELECT MONTH(c.createdAt), COUNT(c)
+	    FROM Complaint c
+	    GROUP BY MONTH(c.createdAt)
+	""")
+	List<Object[]> getMonthlyComplaintStats();
+	
+	long countByUserId(Long userId);
+
+	long countByUserIdAndStatus(
+	        Long userId,
+	        ComplaintStatus status
+	);
+	
+	long countByTechnicianId(Long technicianId);
+
+	long countByTechnicianIdAndStatus(
+	        Long technicianId,
+	        ComplaintStatus status
+	);
 }

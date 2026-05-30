@@ -2,8 +2,13 @@ package com.cms.service;
 
 import com.cms.dto.ComplaintAnalyticsResponse;
 import com.cms.dto.DashboardStatsResponse;
+import com.cms.dto.TechnicianDashboardStats;
+import com.cms.dto.UserDashboardStats;
+import com.cms.exception.ResourceNotFoundException;
 import com.cms.model.ComplaintStatus;
+import com.cms.model.User;
 import com.cms.repository.ComplaintRepository;
+import com.cms.repository.UserRepository;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -17,6 +22,9 @@ public class AnalyticsService {
 
     @Autowired
     private ComplaintRepository complaintRepository;
+    
+    @Autowired
+    private UserRepository userRepository;
 
     public DashboardStatsResponse getDashboardStats() {
 
@@ -96,6 +104,95 @@ public class AnalyticsService {
 
                 .monthlyComplaints(monthlyMap)
 
+                .build();
+    }
+    
+    public UserDashboardStats getUserDashboardStats(
+            String email
+    ) {
+
+        User user = userRepository
+                .findByEmail(email)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "User not found"
+                        ));
+
+        return UserDashboardStats.builder()
+
+                .totalComplaints(
+                        complaintRepository.countByUserId(
+                                user.getId()
+                        )
+                )
+
+                .openComplaints(
+                        complaintRepository
+                                .countByUserIdAndStatus(
+                                        user.getId(),
+                                        ComplaintStatus.OPEN
+                                )
+                )
+
+                .inProgressComplaints(
+                        complaintRepository
+                                .countByUserIdAndStatus(
+                                        user.getId(),
+                                        ComplaintStatus.IN_PROGRESS
+                                )
+                )
+
+                .resolvedComplaints(
+                        complaintRepository
+                                .countByUserIdAndStatus(
+                                        user.getId(),
+                                        ComplaintStatus.RESOLVED
+                                )
+                )
+
+                .build();
+    }
+    
+    public TechnicianDashboardStats
+    getTechnicianDashboardStats(
+            String email
+    ) {
+
+        User technician =
+                userRepository
+                        .findByEmail(email)
+                        .orElseThrow();
+
+        long assigned =
+                complaintRepository
+                        .countByTechnicianId(
+                                technician.getId()
+                        );
+
+        long inProgress =
+                complaintRepository
+                        .countByTechnicianIdAndStatus(
+                                technician.getId(),
+                                ComplaintStatus.IN_PROGRESS
+                        );
+
+        long resolved =
+                complaintRepository
+                        .countByTechnicianIdAndStatus(
+                                technician.getId(),
+                                ComplaintStatus.RESOLVED
+                        );
+
+        double completionRate = assigned == 0
+                ? 0
+                : (resolved * 100.0) / assigned;
+
+        return TechnicianDashboardStats
+                .builder()
+                .assignedComplaints(assigned)
+                .inProgressComplaints(inProgress)
+                .resolvedComplaints(resolved)
+                .completionRate(completionRate)
                 .build();
     }
 }
