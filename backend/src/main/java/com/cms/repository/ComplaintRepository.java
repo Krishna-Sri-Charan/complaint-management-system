@@ -44,4 +44,8 @@ public interface ComplaintRepository extends JpaRepository<Complaint, Long> {
 	        Long technicianId,
 	        ComplaintStatus status
 	);
+	
+	List<Complaint> findByStatus(
+	        ComplaintStatus status
+	);
 }

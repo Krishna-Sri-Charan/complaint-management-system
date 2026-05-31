@@ -19,4 +19,10 @@ public class ComplaintAnalyticsResponse {
     private long resolvedComplaints;
 
     private Map<String, Long> monthlyComplaints;
+    
+    private Double averageResolutionHours;
+
+    private Double fastestResolutionHours;
+
+    private Double slowestResolutionHours;
 }

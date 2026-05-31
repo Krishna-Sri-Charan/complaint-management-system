@@ -30,6 +30,8 @@ public class Complaint {
     private ComplaintPriority priority;
 
     private LocalDateTime createdAt;
+    
+    private LocalDateTime resolvedAt;
 
     @ManyToOne
     private User user;

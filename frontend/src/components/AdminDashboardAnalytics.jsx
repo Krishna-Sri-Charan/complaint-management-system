@@ -23,6 +23,7 @@ import {
   CheckCircleOutline,
   HourglassEmptyOutlined,
   BarChartOutlined,
+  AccessTime,
 } from "@mui/icons-material";
 
 import { useEffect, useState } from "react";
@@ -60,6 +61,9 @@ function AdminDashboardAnalytics() {
     totalComplaints: 0,
     resolvedComplaints: 0,
     pendingComplaints: 0,
+    averageResolutionHours: 0,
+    fastestResolutionHours: 0,
+    slowestResolutionHours: 0,
   });
   const [analytics, setAnalytics] = useState(null);
 
@@ -118,6 +122,31 @@ function AdminDashboardAnalytics() {
       bg: "#fffbeb",
       border: "#fde68a",
     },
+
+    {
+      label: "Avg Resolution",
+      value: `${stats?.averageResolutionTime || 0}h`,
+      icon: <AccessTime sx={{ fontSize: 22 }} />,
+      color: "#06b6d4",
+      bg: "#ecfeff",
+      border: "#a5f3fc",
+    },
+    {
+      label: "Fastest",
+      value: `${stats?.fastestResolutionTime || 0}h`,
+      icon: <AccessTime sx={{ fontSize: 22 }} />,
+      color: "#22c55e",
+      bg: "#f0fdf4",
+      border: "#bbf7d0",
+    },
+    {
+      label: "Slowest",
+      value: `${stats?.slowestResolutionTime || 0}h`,
+      icon: <AccessTime sx={{ fontSize: 22 }} />,
+      color: "#ef4444",
+      bg: "#fef2f2",
+      border: "#fecaca",
+    },
   ];
 
   return (
@@ -145,7 +174,7 @@ function AdminDashboardAnalytics() {
       {/* Stat Cards */}
       <Grid container spacing={3}>
         {statCards.map((card, i) => (
-          <Grid item xs={12} md={4} key={i}>
+          <Grid size={{ xs: 12, md: 4 }} key={i}>
             <Card
               sx={{
                 borderRadius: 3,

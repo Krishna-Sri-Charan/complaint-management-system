@@ -216,6 +216,10 @@ public class ComplaintService {
         );
         
         if (status == ComplaintStatus.RESOLVED) {
+        	
+        	complaint.setResolvedAt(
+                    LocalDateTime.now()
+            );
 
             emailService.sendEmail(
                     complaint.getUser().getEmail(),

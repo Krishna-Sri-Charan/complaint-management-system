@@ -326,14 +326,9 @@ function AdminDashboard() {
                               disableElevation
                               size="small"
                               startIcon={<Engineering sx={{ fontSize: 15 }} />}
-                              onClick={() => handleOpenModal(c.id, "ASSIGN")}
-                              sx={{
-                                borderRadius: 2,
-                                bgcolor: "#4f46e5",
-                                fontWeight: 700,
-                                fontSize: "0.78rem",
-                                px: 2,
-                                "&:hover": { bgcolor: "#4338ca" },
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleOpenModal(c.id, "ASSIGN");
                               }}
                             >
                               Assign Tech
@@ -342,7 +337,10 @@ function AdminDashboard() {
                               variant="outlined"
                               size="small"
                               startIcon={<Update sx={{ fontSize: 15 }} />}
-                              onClick={() => handleOpenModal(c.id, "STATUS")}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleOpenModal(c.id, "STATUS");
+                              }}
                               sx={{
                                 borderRadius: 2,
                                 fontWeight: 700,
