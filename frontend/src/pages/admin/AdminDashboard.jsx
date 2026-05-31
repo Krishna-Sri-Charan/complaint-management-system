@@ -12,9 +12,11 @@ import {
 } from "@mui/icons-material";
 import API from "../../services/api";
 import Layout from "../../components/Layout";
+import { useNavigate } from "react-router-dom";
 import AdminDashboardAnalytics from "../../components/AdminDashboardAnalytics";
 
 function AdminDashboard() {
+  const navigate = useNavigate();
   const [complaints, setComplaints] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [modalType, setModalType] = useState("");
@@ -271,6 +273,7 @@ function AdminDashboard() {
                         boxShadow: "0px 12px 32px rgba(0,0,0,0.08)",
                       },
                     }}
+                    onClick={() => navigate(`/complaints/${c.id}/`)}
                   >
                     <CardContent sx={{ p: 3 }}>
                       <Grid container alignItems="center" spacing={2}>

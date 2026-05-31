@@ -10,6 +10,7 @@ import MyComplaints from "./pages/user/MyComplaints";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import TechnicianDashboard from "./pages/technician/TechnicianDashboard";
 import ComplaintTimeline from "./pages/user/ComplaintTimeline";
+import ComplaintDetails from "./pages/common/ComplaintDetails";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -80,6 +81,15 @@ function App() {
           element={
             <ProtectedRoute allowedRoles={["USER", "ADMIN", "TECHNICIAN"]}>
               <ComplaintTimeline />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/complaints/:id/"
+          element={
+            <ProtectedRoute allowedRoles={["USER", "ADMIN", "TECHNICIAN"]}>
+              <ComplaintDetails />
             </ProtectedRoute>
           }
         />

@@ -12,11 +12,13 @@ import {
 } from "@mui/icons-material";
 import API from "../../services/api";
 import Layout from "../../components/Layout";
+import { useNavigate } from "react-router-dom";
 import TechnicianDashboardAnalytics from "../../components/TechnicianDashboardAnalytics";
 
 function TechnicianDashboard() {
   const [complaints, setComplaints] = useState([]);
   const [openModal, setOpenModal] = useState(false);
+  const navigate = useNavigate();
   const [modalType, setModalType] = useState("");
   const [selectedId, setSelectedId] = useState(null);
   const [inputValue, setInputValue] = useState("");
@@ -172,7 +174,7 @@ function TechnicianDashboard() {
                         boxShadow: "0px 12px 32px rgba(0,0,0,0.08)",
                       },
                     }}
-                  >
+                    onClick={() => navigate(`/complaints/${c.id}/`)}>
                     <CardContent sx={{ p: 3 }}>
                       <Grid container spacing={2} alignItems="center">
                         <Grid item xs={12} md={7}>

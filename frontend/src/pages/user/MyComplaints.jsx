@@ -208,6 +208,7 @@ function MyComplaints() {
                       boxShadow: "0px 2px 8px rgba(0,0,0,0.04)",
                       overflow: "visible",
                     }}
+                    onClick={() => navigate(`/complaints/${c.id}/`)}
                   >
                     <CardContent sx={{ p: { xs: 2.5, md: 3 } }}>
                       <Stack

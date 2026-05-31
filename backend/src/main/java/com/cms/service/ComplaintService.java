@@ -145,10 +145,19 @@ public class ComplaintService {
         );
     }
 
-    public Complaint getComplaintById(Long id) {
+    public Complaint getComplaintById(
+            Long id
+    ) {
 
-        return complaintRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Complaint not found"));
+        return complaintRepository
+                .findById(id)
+
+                .orElseThrow(() ->
+
+                        new ResourceNotFoundException(
+                                "Complaint not found"
+                        )
+                );
     }
 
     public List<Complaint> getAllComplaints() {

@@ -7,8 +7,6 @@ import com.cms.model.ComplaintUpdate;
 import com.cms.service.ComplaintService;
 import com.cms.service.ComplaintUpdateService;
 
-import jakarta.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -110,9 +108,22 @@ public class ComplaintController {
     }
 
     @GetMapping("/{id}")
-    public Complaint getComplaintById(@PathVariable Long id) {
+    public ApiResponse<Complaint> getComplaintById(
+            @PathVariable Long id
+    ) {
 
-        return complaintService.getComplaintById(id);
+        return ApiResponse.<Complaint>builder()
+
+                .success(true)
+
+                .message("Complaint fetched")
+
+                .data(
+                        complaintService
+                                .getComplaintById(id)
+                )
+
+                .build();
     }
     
     @GetMapping("/{id}/updates")
