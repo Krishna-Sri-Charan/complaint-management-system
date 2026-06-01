@@ -3,12 +3,12 @@ import {
   Box, Typography, Card, CardContent, Button,
   Stack, Chip, Grid, Dialog, DialogTitle,
   DialogContent, DialogActions, TextField, MenuItem,
-  Avatar, Divider,
+  Divider, IconButton, Tooltip,
 } from "@mui/material";
 import {
-  Build, Update, RateReview,
+  Update, RateReview,
   CheckCircle, Engineering, FlagOutlined,
-  NoteAddOutlined,
+  NoteAddOutlined, MoreVert,
 } from "@mui/icons-material";
 import API from "../../services/api";
 import Layout from "../../components/Layout";
@@ -73,15 +73,15 @@ function TechnicianDashboard() {
 
   const getPriorityConfig = (priority) => {
     switch (priority?.toUpperCase()) {
-      case "HIGH": return { color: "#dc2626", bg: "#fee2e2" };
-      case "MEDIUM": return { color: "#d97706", bg: "#fef3c7" };
-      default: return { color: "#6366f1", bg: "#eef2ff" };
+      case "HIGH": return { color: "#dc2626", bg: "#fee2e2", border: "#fecaca" };
+      case "MEDIUM": return { color: "#d97706", bg: "#fef3c7", border: "#fde68a" };
+      default: return { color: "#6366f1", bg: "#eef2ff", border: "#c7d2fe" };
     }
   };
 
   return (
     <Layout>
-      <Box sx={{ maxWidth: 1000, margin: "0 auto" }}>
+      <Box sx={{ maxWidth: 1100, margin: "0 auto" }}>
 
         {/* Page Header */}
         <Box
@@ -123,13 +123,37 @@ function TechnicianDashboard() {
             </Box>
           </Stack>
         </Box>
+
         <TechnicianDashboardAnalytics />
-        {/* Content */}
+
+        {/* Section label */}
+        {complaints.length > 0 && (
+          <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mt: 4, mb: 2.5 }}>
+            <Typography variant="h6" sx={{ fontWeight: 800, color: "#0f172a" }}>
+              Assigned Complaints
+            </Typography>
+            <Chip
+              label={`${complaints.length} total`}
+              size="small"
+              sx={{
+                bgcolor: "#ecfdf5",
+                color: "#10b981",
+                fontWeight: 700,
+                borderRadius: "8px",
+                fontSize: "0.75rem",
+                border: "1px solid #a7f3d0",
+              }}
+            />
+          </Stack>
+        )}
+
+        {/* Empty state */}
         {complaints.length === 0 ? (
           <Box
             sx={{
               textAlign: "center",
               py: 12,
+              mt: 4,
               borderRadius: 4,
               bgcolor: "#f0fdf4",
               border: "2px dashed #a7f3d0",
@@ -156,133 +180,182 @@ function TechnicianDashboard() {
               You're up to date. New assignments will appear here.
             </Typography>
           </Box>
+
+        /* Cards grid — 2 per row */
         ) : (
           <Grid container spacing={2.5}>
             {complaints.map((c) => {
               const statusCfg = getStatusConfig(c.status);
               const priorityCfg = getPriorityConfig(c.priority);
               return (
-                <Grid item xs={12} key={c.id}>
+                <Grid item xs={12} sm={6} key={c.id} sx={{ display: "flex" }}>
                   <Card
                     sx={{
+                      width: "100%",
+                      display: "flex",
+                      flexDirection: "column",
                       borderRadius: 3,
                       border: "1px solid #f1f5f9",
                       boxShadow: "0px 2px 8px rgba(0,0,0,0.04)",
-                      transition: "transform 0.2s, box-shadow 0.2s",
+                      transition: "transform 0.2s ease, box-shadow 0.2s ease",
+                      cursor: "pointer",
                       "&:hover": {
                         transform: "translateY(-2px)",
                         boxShadow: "0px 12px 32px rgba(0,0,0,0.08)",
                       },
                     }}
-                    onClick={() => navigate(`/complaints/${c.id}/`)}>
-                    <CardContent sx={{ p: 3 }}>
-                      <Grid container spacing={2} alignItems="center">
-                        <Grid item xs={12} md={7}>
-                          <Stack direction="row" spacing={2} alignItems="flex-start">
-                            <Avatar
-                              sx={{
-                                width: 44,
-                                height: 44,
-                                bgcolor: "#ecfdf5",
-                                color: "#10b981",
-                                fontWeight: 800,
-                                fontSize: "1rem",
-                                borderRadius: "12px",
-                                border: "1px solid #a7f3d0",
-                                flexShrink: 0,
-                              }}
-                            >
-                              {c.title?.charAt(0).toUpperCase()}
-                            </Avatar>
-                            <Box>
-                              <Stack direction="row" spacing={1} flexWrap="wrap" sx={{ mb: 1 }} gap={0.5}>
-                                <Chip
-                                  label={statusCfg.label}
-                                  size="small"
-                                  sx={{
-                                    bgcolor: statusCfg.bg,
-                                    color: statusCfg.color,
-                                    border: `1px solid ${statusCfg.border}`,
-                                    fontWeight: 700,
-                                    borderRadius: "7px",
-                                    height: 22,
-                                    fontSize: "0.7rem",
-                                  }}
-                                />
-                                <Chip
-                                  label={c.priority}
-                                  size="small"
-                                  icon={<FlagOutlined sx={{ fontSize: "12px !important" }} />}
-                                  sx={{
-                                    bgcolor: priorityCfg.bg,
-                                    color: priorityCfg.color,
-                                    fontWeight: 700,
-                                    borderRadius: "7px",
-                                    height: 22,
-                                    fontSize: "0.7rem",
-                                    "& .MuiChip-icon": { color: priorityCfg.color },
-                                  }}
-                                />
-                              </Stack>
-                              <Typography variant="subtitle1" sx={{ fontWeight: 700, color: "#0f172a", mb: 0.5 }}>
-                                {c.title}
-                              </Typography>
-                              <Typography
-                                variant="body2"
-                                color="textSecondary"
-                                sx={{
-                                  overflow: "hidden",
-                                  display: "-webkit-box",
-                                  WebkitLineClamp: 2,
-                                  WebkitBoxOrient: "vertical",
-                                  lineHeight: 1.6,
-                                }}
-                              >
-                                {c.description}
-                              </Typography>
-                            </Box>
-                          </Stack>
-                        </Grid>
+                    onClick={() => navigate(`/complaints/${c.id}/`)}
+                  >
+                    <CardContent
+                      sx={{
+                        p: 3,
+                        display: "flex",
+                        flexDirection: "column",
+                        flex: 1,
+                        "&:last-child": { pb: 3 },
+                      }}
+                    >
+                      {/* Row 1: Chips + Menu */}
+                      <Stack
+                        direction="row"
+                        justifyContent="space-between"
+                        alignItems="flex-start"
+                        sx={{ mb: 1.5 }}
+                      >
+                        <Stack direction="row" flexWrap="wrap" gap={0.6}>
+                          <Chip
+                            label={statusCfg.label}
+                            size="small"
+                            sx={{
+                              bgcolor: statusCfg.bg,
+                              color: statusCfg.color,
+                              border: `1px solid ${statusCfg.border}`,
+                              fontWeight: 700,
+                              borderRadius: "7px",
+                              height: 22,
+                              fontSize: "0.7rem",
+                            }}
+                          />
+                          <Chip
+                            label={`${c.priority || "LOW"} Priority`}
+                            size="small"
+                            icon={<FlagOutlined sx={{ fontSize: "12px !important" }} />}
+                            sx={{
+                              bgcolor: priorityCfg.bg,
+                              color: priorityCfg.color,
+                              border: `1px solid ${priorityCfg.border}`,
+                              fontWeight: 700,
+                              borderRadius: "7px",
+                              height: 22,
+                              fontSize: "0.7rem",
+                              "& .MuiChip-icon": { color: priorityCfg.color },
+                            }}
+                          />
+                        </Stack>
 
-                        <Grid item xs={12} md={5}>
-                          <Stack direction={{ xs: "row", md: "column" }} spacing={1.5} justifyContent={{ md: "flex-end" }}>
-                            <Button
-                              variant="contained"
-                              disableElevation
-                              size="small"
-                              startIcon={<Update sx={{ fontSize: 15 }} />}
-                              onClick={() => handleOpenModal(c.id, "STATUS")}
-                              sx={{
-                                borderRadius: 2,
-                                bgcolor: "#10b981",
-                                fontWeight: 700,
-                                fontSize: "0.78rem",
-                                px: 2.5,
-                                "&:hover": { bgcolor: "#059669" },
-                              }}
-                            >
-                              Update Status
-                            </Button>
-                            <Button
-                              variant="outlined"
-                              size="small"
-                              startIcon={<NoteAddOutlined sx={{ fontSize: 15 }} />}
-                              onClick={() => handleOpenModal(c.id, "NOTE")}
-                              sx={{
-                                borderRadius: 2,
-                                fontWeight: 700,
-                                fontSize: "0.78rem",
-                                px: 2.5,
-                                borderColor: "#a7f3d0",
-                                color: "#10b981",
-                                "&:hover": { borderColor: "#10b981", bgcolor: "#ecfdf5" },
-                              }}
-                            >
-                              Add Work Note
-                            </Button>
-                          </Stack>
-                        </Grid>
-                      </Grid>
+                        <Tooltip title="More options">
+                          <IconButton
+                            size="small"
+                            onClick={(e) => e.stopPropagation()}
+                            sx={{
+                              ml: 1,
+                              flexShrink: 0,
+                              border: "1px solid #e2e8f0",
+                              borderRadius: "8px",
+                              width: 28,
+                              height: 28,
+                              color: "#94a3b8",
+                              "&:hover": { bgcolor: "#f1f5f9", color: "#475569" },
+                            }}
+                          >
+                            <MoreVert sx={{ fontSize: 16 }} />
+                          </IconButton>
+                        </Tooltip>
+                      </Stack>
+
+                      {/* Row 2: Title — 1 line, ellipsis */}
+                      <Typography
+                        variant="subtitle1"
+                        sx={{
+                          fontWeight: 700,
+                          color: "#0f172a",
+                          fontSize: "0.95rem",
+                          mb: 0.5,
+                          whiteSpace: "nowrap",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          flexShrink: 0,
+                        }}
+                      >
+                        {c.title}
+                      </Typography>
+
+                      {/* Row 3: Description — hard 2-line cap */}
+                      <Typography
+                        variant="body2"
+                        color="textSecondary"
+                        sx={{
+                          lineHeight: 1.6,
+                          display: "-webkit-box",
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: "vertical",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          height: "3.2em",
+                          flexShrink: 0,
+                        }}
+                      >
+                        {c.description || "No description provided."}
+                      </Typography>
+
+                      {/* Spacer: pushes divider + buttons to bottom */}
+                      <Box sx={{ flexGrow: 1 }} />
+
+                      <Divider sx={{ my: 2, borderColor: "#f1f5f9" }} />
+
+                      {/* Row 4: Action buttons */}
+                      <Stack direction="row" spacing={1}>
+                        <Button
+                          variant="contained"
+                          disableElevation
+                          size="small"
+                          fullWidth
+                          startIcon={<Update sx={{ fontSize: 14 }} />}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleOpenModal(c.id, "STATUS");
+                          }}
+                          sx={{
+                            borderRadius: 2,
+                            bgcolor: "#10b981",
+                            fontWeight: 700,
+                            fontSize: "0.75rem",
+                            "&:hover": { bgcolor: "#059669" },
+                          }}
+                        >
+                          Update Status
+                        </Button>
+                        <Button
+                          variant="outlined"
+                          size="small"
+                          fullWidth
+                          startIcon={<NoteAddOutlined sx={{ fontSize: 14 }} />}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleOpenModal(c.id, "NOTE");
+                          }}
+                          sx={{
+                            borderRadius: 2,
+                            fontWeight: 700,
+                            fontSize: "0.75rem",
+                            borderColor: "#a7f3d0",
+                            color: "#10b981",
+                            "&:hover": { borderColor: "#10b981", bgcolor: "#ecfdf5" },
+                          }}
+                        >
+                          Add Note
+                        </Button>
+                      </Stack>
                     </CardContent>
                   </Card>
                 </Grid>

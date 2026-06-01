@@ -13,7 +13,9 @@ import {
 import API from "../../services/api";
 import Layout from "../../components/Layout";
 import { useNavigate } from "react-router-dom";
+import Menu from "@mui/material/Menu";
 import AdminDashboardAnalytics from "../../components/AdminDashboardAnalytics";
+import TechnicianPerformanceTable from "../../components/TechnicianPerformanceTable";
 
 function AdminDashboard() {
   const navigate = useNavigate();
@@ -25,10 +27,22 @@ function AdminDashboard() {
   const [keyword, setKeyword] = useState("");
   const [status, setStatus] = useState("OPEN");
   const [priority, setPriority] = useState("MEDIUM");
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [selectedComplaint, setSelectedComplaint] = useState(null);
 
   useEffect(() => {
     fetchComplaints();
   }, []);
+
+  const handleMenuOpen = (event, complaintId) => {
+    event.stopPropagation();
+    setAnchorEl(event.currentTarget);
+    setSelectedComplaint(complaintId);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
 
   const fetchComplaints = async () => {
     try {
@@ -234,6 +248,8 @@ function AdminDashboard() {
 
         <AdminDashboardAnalytics />
 
+        <TechnicianPerformanceTable />
+
         {/* Complaints List */}
         <Box sx={{ mt: 4 }}>
           <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 2.5 }}>
@@ -261,9 +277,12 @@ function AdminDashboard() {
               const statusCfg = getStatusConfig(c.status);
               const priorityCfg = getPriorityConfig(c.priority);
               return (
-                <Grid item xs={12} key={c.id}>
+                <Grid item xs={12} md={6} key={c.id}>
                   <Card
                     sx={{
+                      height: "100%",
+                      display: "flex",
+                      flexDirection: "column",
                       borderRadius: 3,
                       border: "1px solid #f1f5f9",
                       boxShadow: "0px 2px 8px rgba(0,0,0,0.04)",
@@ -273,89 +292,124 @@ function AdminDashboard() {
                         boxShadow: "0px 12px 32px rgba(0,0,0,0.08)",
                       },
                     }}
-                    onClick={() => navigate(`/complaints/${c.id}/`)}
                   >
-                    <CardContent sx={{ p: 3 }}>
-                      <Grid container alignItems="center" spacing={2}>
-                        <Grid item xs={12} md={7}>
-                          <Stack direction="row" spacing={2} alignItems="flex-start">
-                            <Box>
-                              <Stack direction="row" spacing={1} flexWrap="wrap" sx={{ mb: 1 }} gap={0.5}>
-                                <Chip
-                                  label={statusCfg.label}
-                                  size="small"
-                                  sx={{
-                                    bgcolor: statusCfg.bg,
-                                    color: statusCfg.color,
-                                    border: `1px solid ${statusCfg.border}`,
-                                    fontWeight: 700,
-                                    borderRadius: "7px",
-                                    height: 22,
-                                    fontSize: "0.7rem",
-                                  }}
-                                />
-                                <Chip
-                                  label={c.priority}
-                                  size="small"
-                                  icon={<FlagOutlined sx={{ fontSize: "12px !important" }} />}
-                                  sx={{
-                                    bgcolor: priorityCfg.bg,
-                                    color: priorityCfg.color,
-                                    fontWeight: 700,
-                                    borderRadius: "7px",
-                                    height: 22,
-                                    fontSize: "0.7rem",
-                                    "& .MuiChip-icon": { color: priorityCfg.color },
-                                  }}
-                                />
-                              </Stack>
-                              <Typography variant="subtitle1" sx={{ fontWeight: 700, color: "#0f172a", mb: 0.3 }}>
-                                {c.title}
-                              </Typography>
-                              <Typography variant="caption" color="textSecondary" fontWeight={500}>
-                                Complaint ID: #{c.id}
-                              </Typography>
-                            </Box>
-                          </Stack>
-                        </Grid>
+                    <CardContent sx={{ p: 3, display: "flex", flexDirection: "column", height: "100%" }}>
 
-                        <Grid item xs={12} md={5}>
-                          <Stack direction="row" spacing={1.5} justifyContent={{ md: "flex-end" }} flexWrap="wrap">
-                            <Button
-                              variant="contained"
-                              disableElevation
-                              size="small"
-                              startIcon={<Engineering sx={{ fontSize: 15 }} />}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleOpenModal(c.id, "ASSIGN");
-                              }}
-                            >
-                              Assign Tech
-                            </Button>
-                            <Button
-                              variant="outlined"
-                              size="small"
-                              startIcon={<Update sx={{ fontSize: 15 }} />}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleOpenModal(c.id, "STATUS");
-                              }}
-                              sx={{
-                                borderRadius: 2,
-                                fontWeight: 700,
-                                fontSize: "0.78rem",
-                                px: 2,
-                                borderColor: "#c7d2fe",
-                                color: "#6366f1",
-                                "&:hover": { borderColor: "#6366f1", bgcolor: "#eef2ff" },
-                              }}
-                            >
-                              Update Status
-                            </Button>
-                          </Stack>
-                        </Grid>
-                      </Grid>
+                      {/* Top row: Chips + Menu button */}
+                      <Stack direction="row" justifyContent="space-between" alignItems="flex-start" sx={{ mb: 1.5 }}>
+                        <Stack direction="row" spacing={0.8} flexWrap="wrap" gap={0.5}>
+                          <Chip
+                            label={statusCfg.label}
+                            size="small"
+                            sx={{
+                              bgcolor: statusCfg.bg,
+                              color: statusCfg.color,
+                              border: `1px solid ${statusCfg.border}`,
+                              fontWeight: 700,
+                              borderRadius: "7px",
+                              height: 22,
+                              fontSize: "0.7rem",
+                            }}
+                          />
+                          <Chip
+                            label={c.priority}
+                            size="small"
+                            icon={<FlagOutlined sx={{ fontSize: "12px !important" }} />}
+                            sx={{
+                              bgcolor: priorityCfg.bg,
+                              color: priorityCfg.color,
+                              fontWeight: 700,
+                              borderRadius: "7px",
+                              height: 22,
+                              fontSize: "0.7rem",
+                              "& .MuiChip-icon": { color: priorityCfg.color },
+                            }}
+                          />
+                        </Stack>
+
+                        <IconButton
+                          onClick={(e) => handleMenuOpen(e, c.id)}
+                          size="small"
+                          sx={{
+                            ml: 1,
+                            flexShrink: 0,
+                            border: "1px solid #e2e8f0",
+                            borderRadius: "8px",
+                            width: 28,
+                            height: 28,
+                            color: "#94a3b8",
+                            "&:hover": { bgcolor: "#f1f5f9", color: "#475569" },
+                          }}
+                        >
+                          <MoreVert sx={{ fontSize: 16 }} />
+                        </IconButton>
+                      </Stack>
+
+                      {/* Title + ID */}
+                      <Typography
+                        variant="subtitle1"
+                        sx={{
+                          fontWeight: 700,
+                          color: "#0f172a",
+                          mb: 0.4,
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        {c.title}
+                      </Typography>
+                      <Typography variant="caption" color="textSecondary" fontWeight={500} sx={{ mb: "auto" }}>
+                        Complaint ID: #{c.id}
+                      </Typography>
+
+                      {/* Divider */}
+                      <Divider sx={{ my: 2, borderColor: "#f1f5f9" }} />
+
+                      {/* Bottom row: Action buttons */}
+                      <Stack direction="row" spacing={1}>
+                        <Button
+                          variant="contained"
+                          disableElevation
+                          size="small"
+                          fullWidth
+                          startIcon={<Engineering sx={{ fontSize: 14 }} />}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleOpenModal(c.id, "ASSIGN");
+                          }}
+                          sx={{
+                            borderRadius: 2,
+                            bgcolor: "#4f46e5",
+                            fontWeight: 700,
+                            fontSize: "0.75rem",
+                            "&:hover": { bgcolor: "#4338ca" },
+                          }}
+                        >
+                          Assign Tech
+                        </Button>
+                        <Button
+                          variant="outlined"
+                          size="small"
+                          fullWidth
+                          startIcon={<Update sx={{ fontSize: 14 }} />}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleOpenModal(c.id, "STATUS");
+                          }}
+                          sx={{
+                            borderRadius: 2,
+                            fontWeight: 700,
+                            fontSize: "0.75rem",
+                            borderColor: "#c7d2fe",
+                            color: "#6366f1",
+                            "&:hover": { borderColor: "#6366f1", bgcolor: "#eef2ff" },
+                          }}
+                        >
+                          Update Status
+                        </Button>
+                      </Stack>
+
                     </CardContent>
                   </Card>
                 </Grid>
@@ -363,6 +417,38 @@ function AdminDashboard() {
             })}
           </Grid>
         </Box>
+
+        <Menu
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={handleMenuClose}
+        >
+          <MenuItem
+            onClick={() => {
+              navigate(
+                `/complaints/${selectedComplaint}`
+              );
+              handleMenuClose();
+            }}
+          >
+            View Details
+          </MenuItem>
+        </Menu>
+
+        <Menu
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={handleMenuClose}
+        >
+          <MenuItem
+            onClick={() => {
+              navigate(`/complaints/${selectedComplaint}`);
+              handleMenuClose();
+            }}
+          >
+            View Details
+          </MenuItem>
+        </Menu>
 
         {/* Action Dialog */}
         <Dialog

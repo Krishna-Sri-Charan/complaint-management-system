@@ -10,16 +10,16 @@ import {
   Skeleton,
   IconButton,
   Button,
-  Avatar,
   Tooltip,
   Divider,
+  Menu,
+  MenuItem,
 } from "@mui/material";
 import {
   MoreVert,
   ErrorOutline,
   CheckCircleOutline,
   PendingActions,
-  AccessTime,
   FlagOutlined,
   InboxOutlined,
   Timeline,
@@ -31,6 +31,8 @@ import { useNavigate } from "react-router-dom";
 function MyComplaints() {
   const [complaints, setComplaints] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [selectedComplaint, setSelectedComplaint] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -46,6 +48,16 @@ function MyComplaints() {
       console.log(error);
       setLoading(false);
     }
+  };
+
+  const handleMenuOpen = (event, complaintId) => {
+    event.stopPropagation();
+    setAnchorEl(event.currentTarget);
+    setSelectedComplaint(complaintId);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
   };
 
   const getStatusConfig = (status) => {
@@ -80,23 +92,18 @@ function MyComplaints() {
   const getPriorityConfig = (priority) => {
     switch (priority?.toUpperCase()) {
       case "HIGH":
-        return { color: "#dc2626", bg: "#fee2e2" };
+        return { color: "#dc2626", bg: "#fee2e2", border: "#fecaca" };
       case "MEDIUM":
-        return { color: "#d97706", bg: "#fef3c7" };
+        return { color: "#d97706", bg: "#fef3c7", border: "#fde68a" };
       default:
-        return { color: "#6366f1", bg: "#eef2ff" };
+        return { color: "#6366f1", bg: "#eef2ff", border: "#c7d2fe" };
     }
-  };
-
-  const getAvatarColor = (title) => {
-    const colors = ["#6366f1", "#ec4899", "#10b981", "#f59e0b", "#3b82f6", "#8b5cf6"];
-    const idx = (title?.charCodeAt(0) || 0) % colors.length;
-    return colors[idx];
   };
 
   return (
     <Layout>
-      <Box sx={{ maxWidth: 1000, margin: "0 auto" }}>
+      <Box sx={{ maxWidth: 1100, margin: "0 auto" }}>
+
         {/* Header */}
         <Box
           sx={{
@@ -111,10 +118,7 @@ function MyComplaints() {
           }}
         >
           <Box>
-            <Typography
-              variant="h4"
-              sx={{ fontWeight: 800, color: "#0f172a", letterSpacing: "-0.5px" }}
-            >
+            <Typography variant="h4" sx={{ fontWeight: 800, color: "#0f172a", letterSpacing: "-0.5px" }}>
               My Complaints
             </Typography>
             <Typography variant="body2" color="textSecondary" sx={{ mt: 0.5 }}>
@@ -137,12 +141,17 @@ function MyComplaints() {
           )}
         </Box>
 
+        {/* Loading skeletons */}
         {loading ? (
-          <Stack spacing={2.5}>
-            {[1, 2, 3].map((i) => (
-              <Skeleton key={i} variant="rounded" height={130} sx={{ borderRadius: 3 }} />
+          <Grid container spacing={2.5}>
+            {[1, 2, 3, 4].map((i) => (
+              <Grid item xs={12} sm={6} key={i}>
+                <Skeleton variant="rounded" height={220} sx={{ borderRadius: 3 }} />
+              </Grid>
             ))}
-          </Stack>
+          </Grid>
+
+        /* Empty state */
         ) : complaints.length === 0 ? (
           <Box
             sx={{
@@ -189,158 +198,222 @@ function MyComplaints() {
               File a Complaint
             </Button>
           </Box>
+
+        /* Cards grid */
         ) : (
-          <Grid container spacing={2.5}>
-            {complaints.map((c) => {
-              const statusCfg = getStatusConfig(c.status);
-              const priorityCfg = getPriorityConfig(c.priority);
-              return (
-                <Grid item xs={12} key={c.id}>
-                  <Card
-                    sx={{
-                      borderRadius: 3,
-                      transition: "transform 0.2s ease, box-shadow 0.2s ease",
-                      "&:hover": {
-                        transform: "translateY(-2px)",
-                        boxShadow: "0px 12px 32px rgba(0,0,0,0.08)",
-                      },
-                      border: "1px solid #f1f5f9",
-                      boxShadow: "0px 2px 8px rgba(0,0,0,0.04)",
-                      overflow: "visible",
-                    }}
-                    onClick={() => navigate(`/complaints/${c.id}/`)}
-                  >
-                    <CardContent sx={{ p: { xs: 2.5, md: 3 } }}>
-                      <Stack
-                        direction={{ xs: "column", sm: "row" }}
-                        justifyContent="space-between"
-                        alignItems={{ xs: "flex-start", sm: "flex-start" }}
-                        spacing={2}
+          <>
+            <Grid container spacing={2.5}>
+              {complaints.map((c) => {
+                const statusCfg = getStatusConfig(c.status);
+                const priorityCfg = getPriorityConfig(c.priority);
+                return (
+                  <Grid item xs={12} sm={6} key={c.id} sx={{ display: "flex" }}>
+                    <Card
+                      sx={{
+                        width: "100%",
+                        display: "flex",
+                        flexDirection: "column",
+                        borderRadius: 3,
+                        border: "1px solid #f1f5f9",
+                        boxShadow: "0px 2px 8px rgba(0,0,0,0.04)",
+                        transition: "transform 0.2s ease, box-shadow 0.2s ease",
+                        "&:hover": {
+                          transform: "translateY(-2px)",
+                          boxShadow: "0px 12px 32px rgba(0,0,0,0.08)",
+                        },
+                      }}
+                    >
+                      <CardContent
+                        sx={{
+                          p: 3,
+                          display: "flex",
+                          flexDirection: "column",
+                          flex: 1,
+                          "&:last-child": { pb: 3 },
+                        }}
                       >
-                        {/* Left: Icon + Content */}
-                        <Stack direction="row" spacing={2.5} sx={{ flex: 1, minWidth: 0 }}>
-                          <Box sx={{ minWidth: 0, flex: 1 }}>
-                            {/* Badges */}
-                            <Stack direction="row" spacing={1} flexWrap="wrap" sx={{ mb: 1.5 }} gap={1}>
-                              <Chip
-                                label={statusCfg.label}
-                                size="small"
-                                icon={statusCfg.icon}
-                                sx={{
-                                  bgcolor: statusCfg.bg,
-                                  color: statusCfg.color,
-                                  border: `1px solid ${statusCfg.border}`,
-                                  fontWeight: 700,
-                                  borderRadius: "7px",
-                                  height: 24,
-                                  fontSize: "0.7rem",
-                                  "& .MuiChip-icon": { color: statusCfg.color, fontSize: 13 },
-                                }}
-                              />
-                              <Chip
-                                label={`${c.priority || "LOW"} Priority`}
-                                size="small"
-                                icon={<FlagOutlined sx={{ fontSize: "13px !important" }} />}
-                                sx={{
-                                  bgcolor: priorityCfg.bg,
-                                  color: priorityCfg.color,
-                                  fontWeight: 700,
-                                  borderRadius: "7px",
-                                  height: 24,
-                                  fontSize: "0.7rem",
-                                  "& .MuiChip-icon": { color: priorityCfg.color },
-                                }}
-                              />
-                            </Stack>
-
-                            <Typography
-                              variant="h6"
+                        {/* Row 1: Chips + Menu */}
+                        <Stack
+                          direction="row"
+                          justifyContent="space-between"
+                          alignItems="flex-start"
+                          sx={{ mb: 1.5 }}
+                        >
+                          <Stack direction="row" flexWrap="wrap" gap={0.6}>
+                            <Chip
+                              label={statusCfg.label}
+                              size="small"
+                              icon={statusCfg.icon}
                               sx={{
+                                bgcolor: statusCfg.bg,
+                                color: statusCfg.color,
+                                border: `1px solid ${statusCfg.border}`,
                                 fontWeight: 700,
-                                color: "#0f172a",
-                                fontSize: "1rem",
-                                mb: 0.5,
-                                overflow: "hidden",
-                                textOverflow: "ellipsis",
-                                whiteSpace: "nowrap",
+                                borderRadius: "7px",
+                                height: 22,
+                                fontSize: "0.7rem",
+                                "& .MuiChip-icon": { color: statusCfg.color, fontSize: 13 },
                               }}
-                            >
-                              {c.title}
-                            </Typography>
-                            <Typography
-                              variant="body2"
-                              color="textSecondary"
+                            />
+                            <Chip
+                              label={`${c.priority || "LOW"} Priority`}
+                              size="small"
+                              icon={<FlagOutlined sx={{ fontSize: "13px !important" }} />}
                               sx={{
-                                maxWidth: 560,
-                                overflow: "hidden",
-                                display: "-webkit-box",
-                                WebkitLineClamp: 2,
-                                WebkitBoxOrient: "vertical",
-                                lineHeight: 1.6,
+                                bgcolor: priorityCfg.bg,
+                                color: priorityCfg.color,
+                                border: `1px solid ${priorityCfg.border}`,
+                                fontWeight: 700,
+                                borderRadius: "7px",
+                                height: 22,
+                                fontSize: "0.7rem",
+                                "& .MuiChip-icon": { color: priorityCfg.color },
+                              }}
+                            />
+                          </Stack>
+
+                          <Tooltip title="More options">
+                            <IconButton
+                              size="small"
+                              onClick={(e) => handleMenuOpen(e, c.id)}
+                              sx={{
+                                ml: 1,
+                                flexShrink: 0,
+                                border: "1px solid #e2e8f0",
+                                borderRadius: "8px",
+                                width: 28,
+                                height: 28,
+                                color: "#94a3b8",
+                                "&:hover": { bgcolor: "#f1f5f9", color: "#475569" },
                               }}
                             >
-                              {c.description}
-                            </Typography>
-
-                            {c.attachmentUrl && (
-                              <Box sx={{ mt: 1.5 }}>
-                                <img
-                                  src={`http://localhost:8080/uploads/${c.attachmentUrl}`}
-                                  alt="attachment"
-                                  style={{
-                                    width: 180,
-                                    borderRadius: "10px",
-                                    border: "1px solid #e2e8f0",
-                                  }}
-                                />
-                              </Box>
-                            )}
-
-                            <Box sx={{ mt: 2 }}>
-                              <Button
-                                variant="outlined"
-                                size="small"
-                                startIcon={<Timeline sx={{ fontSize: 16 }} />}
-                                onClick={() => navigate(`/complaint/${c.id}/timeline`)}
-                                sx={{
-                                  borderRadius: 2,
-                                  fontWeight: 700,
-                                  fontSize: "0.75rem",
-                                  borderColor: "#c7d2fe",
-                                  color: "#6366f1",
-                                  px: 2,
-                                  "&:hover": {
-                                    borderColor: "#6366f1",
-                                    bgcolor: "#eef2ff",
-                                  },
-                                }}
-                              >
-                                View Timeline
-                              </Button>
-                            </Box>
-                          </Box>
+                              <MoreVert sx={{ fontSize: 16 }} />
+                            </IconButton>
+                          </Tooltip>
                         </Stack>
 
-                        {/* Right: Actions */}
-                        <Tooltip title="More options">
-                          <IconButton
-                            size="small"
-                            sx={{
-                              color: "#94a3b8",
-                              "&:hover": { bgcolor: "#f1f5f9", color: "#475569" },
-                              flexShrink: 0,
-                            }}
-                          >
-                            <MoreVert fontSize="small" />
-                          </IconButton>
-                        </Tooltip>
-                      </Stack>
-                    </CardContent>
-                  </Card>
-                </Grid>
-              );
-            })}
-          </Grid>
+                        {/* Row 2: Title — 1 line, ellipsis */}
+                        <Typography
+                          variant="subtitle1"
+                          sx={{
+                            fontWeight: 700,
+                            color: "#0f172a",
+                            fontSize: "0.95rem",
+                            mb: 0.5,
+                            whiteSpace: "nowrap",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            flexShrink: 0,
+                          }}
+                        >
+                          {c.title}
+                        </Typography>
+
+                        {/* Row 3: Description — hard 2-line cap, ellipsis */}
+                        <Typography
+                          variant="body2"
+                          color="textSecondary"
+                          sx={{
+                            lineHeight: 1.6,
+                            display: "-webkit-box",
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: "vertical",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            height: "3.2em",   /* exactly 2 lines — keeps all cards aligned */
+                            flexShrink: 0,
+                          }}
+                        >
+                          {c.description || "No description provided."}
+                        </Typography>
+
+                        {/* Row 4: Attachment or fixed-height placeholder */}
+                        <Box sx={{ mt: 1.5, flexShrink: 0, height: c.attachmentUrl ? "auto" : 0 }}>
+                          {c.attachmentUrl && (
+                            <img
+                              src={`http://localhost:8080/uploads/${c.attachmentUrl}`}
+                              alt="attachment"
+                              style={{
+                                width: "100%",
+                                maxHeight: 100,
+                                objectFit: "cover",
+                                borderRadius: "8px",
+                                border: "1px solid #e2e8f0",
+                                display: "block",
+                              }}
+                            />
+                          )}
+                        </Box>
+
+                        {/* Spacer: pushes divider + button to bottom */}
+                        <Box sx={{ flexGrow: 1 }} />
+
+                        <Divider sx={{ my: 2, borderColor: "#f1f5f9" }} />
+
+                        {/* Row 5: Action button */}
+                        <Button
+                          variant="outlined"
+                          size="small"
+                          fullWidth
+                          startIcon={<Timeline sx={{ fontSize: 15 }} />}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/complaint/${c.id}/timeline`);
+                          }}
+                          sx={{
+                            borderRadius: 2,
+                            fontWeight: 700,
+                            fontSize: "0.78rem",
+                            borderColor: "#c7d2fe",
+                            color: "#6366f1",
+                            flexShrink: 0,
+                            "&:hover": { borderColor: "#6366f1", bgcolor: "#eef2ff" },
+                          }}
+                        >
+                          View Timeline
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                );
+              })}
+            </Grid>
+
+            {/* Single Menu instance — outside the map loop */}
+            <Menu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleMenuClose}
+              PaperProps={{
+                sx: {
+                  borderRadius: 2,
+                  boxShadow: "0 8px 24px rgba(0,0,0,0.1)",
+                  border: "1px solid #f1f5f9",
+                  minWidth: 170,
+                  mt: 0.5,
+                },
+              }}
+            >
+              <MenuItem
+                onClick={() => {
+                  navigate(`/complaints/${selectedComplaint}`);
+                  handleMenuClose();
+                }}
+                sx={{ fontSize: "0.85rem", fontWeight: 600, color: "#0f172a", borderRadius: 1, mx: 0.5 }}
+              >
+                View Full Details
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  navigate(`/complaint/${selectedComplaint}/timeline`);
+                  handleMenuClose();
+                }}
+                sx={{ fontSize: "0.85rem", fontWeight: 600, color: "#6366f1", borderRadius: 1, mx: 0.5 }}
+              >
+                View Timeline
+              </MenuItem>
+            </Menu>
+          </>
         )}
       </Box>
     </Layout>

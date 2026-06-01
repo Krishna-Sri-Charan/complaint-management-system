@@ -4,10 +4,12 @@ import com.cms.dto.ApiResponse;
 import com.cms.dto.ComplaintAnalyticsResponse;
 import com.cms.dto.DashboardStatsResponse;
 import com.cms.dto.TechnicianDashboardStats;
+import com.cms.dto.TechnicianPerformanceDto;
 import com.cms.dto.UserDashboardStats;
 import com.cms.service.AnalyticsService;
 
 import java.security.Principal;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -30,8 +32,7 @@ public class AnalyticsController {
     }
     
     @GetMapping("/complaints")
-    public ApiResponse<ComplaintAnalyticsResponse>
-    getComplaintAnalytics() {
+    public ApiResponse<ComplaintAnalyticsResponse> getComplaintAnalytics() {
 
         return ApiResponse
                 .<ComplaintAnalyticsResponse>builder()
@@ -42,8 +43,7 @@ public class AnalyticsController {
     }
     
     @GetMapping("/my-dashboard")
-    public ApiResponse<UserDashboardStats>
-    getMyDashboardStats(
+    public ApiResponse<UserDashboardStats> getMyDashboardStats(
             Principal principal
     ) {
 
@@ -61,25 +61,34 @@ public class AnalyticsController {
     }
     
     @GetMapping("/technician-dashboard")
-    public ApiResponse<TechnicianDashboardStats>
-    getTechnicianDashboard(
+    public ApiResponse<TechnicianDashboardStats> getTechnicianDashboard(
             Principal principal
     ) {
 
         return ApiResponse
                 .<TechnicianDashboardStats>builder()
-
                 .success(true)
-
                 .message("Technician dashboard")
-
                 .data(
                         analyticsService
                                 .getTechnicianDashboardStats(
                                         principal.getName()
                                 )
                 )
+                .build();
+    }
+    
+    @GetMapping("/technician-performance")
+    public ApiResponse<List<TechnicianPerformanceDto>> getTechnicianPerformance() {
 
+        return ApiResponse
+                .<List<TechnicianPerformanceDto>>builder()
+                .success(true)
+                .message("Technician performance")
+                .data(
+                        analyticsService
+                                .getTechnicianPerformance()
+                )	
                 .build();
     }
 }

@@ -3,10 +3,12 @@ package com.cms.service;
 import com.cms.dto.ComplaintAnalyticsResponse;
 import com.cms.dto.DashboardStatsResponse;
 import com.cms.dto.TechnicianDashboardStats;
+import com.cms.dto.TechnicianPerformanceDto;
 import com.cms.dto.UserDashboardStats;
 import com.cms.exception.ResourceNotFoundException;
 import com.cms.model.Complaint;
 import com.cms.model.ComplaintStatus;
+import com.cms.model.Role;
 import com.cms.model.User;
 import com.cms.repository.ComplaintRepository;
 import com.cms.repository.UserRepository;
@@ -224,8 +226,7 @@ public class AnalyticsService {
                 .build();
     }
     
-    public TechnicianDashboardStats
-    getTechnicianDashboardStats(
+    public TechnicianDashboardStats getTechnicianDashboardStats(
             String email
     ) {
 
@@ -265,5 +266,58 @@ public class AnalyticsService {
                 .resolvedComplaints(resolved)
                 .completionRate(completionRate)
                 .build();
+    }
+    
+    public List<TechnicianPerformanceDto> getTechnicianPerformance() {
+
+        List<User> technicians =
+                userRepository.findByRole(
+                        Role.TECHNICIAN
+                );
+
+        return technicians.stream()
+
+                .map(tech -> {
+
+                    long assigned =
+                            complaintRepository
+                                    .countByTechnicianId(
+                                            tech.getId()
+                                    );
+
+                    long resolved =
+                            complaintRepository
+                                    .countByTechnicianIdAndStatus(
+                                            tech.getId(),
+                                            ComplaintStatus.RESOLVED
+                                    );
+
+                    double completionRate =
+                            assigned == 0
+                                    ? 0
+                                    : (resolved * 100.0)
+                                    / assigned;
+
+                    return TechnicianPerformanceDto
+                            .builder()
+                            .technicianId(
+                                    tech.getId()
+                            )
+                            .technicianName(
+                                    tech.getName()
+                            )
+                            .assignedComplaints(
+                                    assigned
+                            )
+                            .resolvedComplaints(
+                                    resolved
+                            )
+                            .completionRate(
+                                    completionRate
+                            )
+                            .build();
+                })
+
+                .toList();
     }
 }
