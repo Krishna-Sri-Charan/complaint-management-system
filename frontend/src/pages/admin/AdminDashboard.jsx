@@ -104,6 +104,47 @@ function AdminDashboard() {
     }
   };
 
+  const downloadExcel =
+    async () => {
+
+      try {
+
+        const response =
+          await API.get(
+            "/export/complaints",
+            {
+              responseType: "blob"
+            }
+          );
+
+        const url =
+          window.URL.createObjectURL(
+            new Blob(
+              [response.data]
+            )
+          );
+
+        const link =
+          document.createElement("a");
+
+        link.href = url;
+
+        link.setAttribute(
+          "download",
+          "complaints.xlsx"
+        );
+
+        document.body
+          .appendChild(link);
+
+        link.click();
+
+      } catch(error) {
+
+        console.log(error);
+      }
+    };
+
   return (
     <Layout>
       <Box sx={{ maxWidth: 1200, margin: "0 auto" }}>
@@ -148,6 +189,12 @@ function AdminDashboard() {
                 </Typography>
               </Box>
             </Stack>
+            <Button
+              variant="contained"
+              onClick={downloadExcel}
+            >
+              Export Excel
+            </Button>
           </Stack>
         </Box>
 
@@ -428,21 +475,6 @@ function AdminDashboard() {
               navigate(
                 `/complaints/${selectedComplaint}`
               );
-              handleMenuClose();
-            }}
-          >
-            View Details
-          </MenuItem>
-        </Menu>
-
-        <Menu
-          anchorEl={anchorEl}
-          open={Boolean(anchorEl)}
-          onClose={handleMenuClose}
-        >
-          <MenuItem
-            onClick={() => {
-              navigate(`/complaints/${selectedComplaint}`);
               handleMenuClose();
             }}
           >
