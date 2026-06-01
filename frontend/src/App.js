@@ -6,11 +6,12 @@ import RegisterPage from "./pages/auth/RegisterPage";
 import UserDashboard from "./pages/user/UserDashboard";
 import CreateComplaint from "./pages/user/CreateComplaint";
 import MyComplaints from "./pages/user/MyComplaints";
+import ComplaintTimeline from "./pages/user/ComplaintTimeline";
 
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import TechnicianDashboard from "./pages/technician/TechnicianDashboard";
-import ComplaintTimeline from "./pages/user/ComplaintTimeline";
 import ComplaintDetails from "./pages/common/ComplaintDetails";
+import ProfilePage from "./pages/profile/ProfilePage";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -78,20 +79,17 @@ function App() {
 
         <Route
           path="/complaint/:id/timeline"
-          element={
-            <ProtectedRoute allowedRoles={["USER", "ADMIN", "TECHNICIAN"]}>
-              <ComplaintTimeline />
-            </ProtectedRoute>
-          }
+          element={<ComplaintTimeline />}
         />
 
         <Route
           path="/complaints/:id/"
-          element={
-            <ProtectedRoute allowedRoles={["USER", "ADMIN", "TECHNICIAN"]}>
-              <ComplaintDetails />
-            </ProtectedRoute>
-          }
+          element={<ComplaintDetails />}
+        />
+
+        <Route
+          path="/profile"
+          element={<ProfilePage />}
         />
 
       </Routes>

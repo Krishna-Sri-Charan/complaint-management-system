@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 import {
   Dashboard, AddCircle, ListAlt, AdminPanelSettings,
-  Engineering, Logout, NotificationsOutlined,
+  Engineering, Logout, NotificationsOutlined, Person
 } from "@mui/icons-material";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
@@ -59,6 +59,12 @@ function Layout({ children }) {
       { text: "Technician Dashboard", icon: <Engineering fontSize="small" />, path: "/technician-dashboard" }
     );
   }
+
+  menuItems.push({
+    text: "Profile",
+    icon: <Person />,
+    path: "/profile"
+  });
 
   const getInitials = (name) =>
     (name || "U")

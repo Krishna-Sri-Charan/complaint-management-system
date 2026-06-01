@@ -403,15 +403,6 @@ function MyComplaints() {
               >
                 View Full Details
               </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  navigate(`/complaint/${selectedComplaint}/timeline`);
-                  handleMenuClose();
-                }}
-                sx={{ fontSize: "0.85rem", fontWeight: 600, color: "#6366f1", borderRadius: 1, mx: 0.5 }}
-              >
-                View Timeline
-              </MenuItem>
             </Menu>
           </>
         )}
