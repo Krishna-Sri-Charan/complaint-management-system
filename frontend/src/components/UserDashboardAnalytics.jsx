@@ -127,6 +127,7 @@ function UserDashboardAnalytics() {
       <Typography
         variant="h6"
         fontWeight={700}
+        paddingTop={2}
         mb={2}
       >
         Complaint Status Overview
