@@ -7,9 +7,14 @@ import {
   TrendingUpOutlined,
 } from "@mui/icons-material";
 import API from "../services/api";
+import Layout from "./Layout";
+import CommonLoader from "./CommonLoader";
+import ErrorMessage from "./ErrorMessage";
 
 function TechnicianDashboardAnalytics() {
   const [stats, setStats] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     fetchStats();
@@ -21,6 +26,9 @@ function TechnicianDashboardAnalytics() {
       setStats(res.data.data);
     } catch (error) {
       console.log(error);
+      setError("Failed to fetch technician dashboard stats.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -61,6 +69,14 @@ function TechnicianDashboardAnalytics() {
       border: "#ddd6fe",
     },
   ];
+
+  if (loading) {
+    return <Layout><CommonLoader /></Layout>;
+  }
+
+  if (error) {
+    return <Layout><ErrorMessage message={error} /></Layout>;
+  }
 
   return (
     <Box sx={{ mb: 5 }}>

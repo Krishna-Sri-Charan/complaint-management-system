@@ -27,6 +27,7 @@ import {
 import API from "../../services/api";
 import { useNavigate } from "react-router-dom";
 import Layout from "../../components/Layout";
+import ErrorMessage from "../../components/ErrorMessage";
 
 function CreateComplaint() {
   const navigate = useNavigate();
@@ -41,6 +42,7 @@ function CreateComplaint() {
   const [aiLoading, setAiLoading] = useState(false);
   const [suggestions, setSuggestions] = useState("");
   const [recommendedTeam, setRecommendedTeam] = useState("");
+  const [error, setError] = useState("");
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -65,7 +67,9 @@ function CreateComplaint() {
       alert(res.data.message);
       navigate("/dashboard");
     } catch (error) {
-      alert("Failed to create complaint");
+      setError("Failed to create complaint");
+    } finally {
+      setError("");
     }
   };
 
@@ -121,6 +125,14 @@ function CreateComplaint() {
       bg: "#fee2e2",
     },
   ];
+  
+  if (error) {
+    return (
+      <Layout>
+        <ErrorMessage message={error} />
+      </Layout>
+    );
+  }
 
   return (
     <Layout>

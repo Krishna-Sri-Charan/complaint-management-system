@@ -16,6 +16,8 @@ import { useNavigate } from "react-router-dom";
 import TechnicianDashboardAnalytics from "../../components/TechnicianDashboardAnalytics";
 import Menu from "@mui/material/Menu";
 import Pagination from "@mui/material/Pagination";
+import CommonLoader from "../../components/CommonLoader";
+import ErrorMessage from "../../components/ErrorMessage";
 
 function TechnicianDashboard() {
   const [complaints, setComplaints] = useState([]);
@@ -28,6 +30,8 @@ function TechnicianDashboard() {
   const [selectedComplaint, setSelectedComplaint] = useState(null);
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   
   const user = JSON.parse(localStorage.getItem("cms_user"));
 
@@ -46,6 +50,8 @@ function TechnicianDashboard() {
   };
 
   const fetchComplaints = async () => {
+    setLoading(true);
+    setError("");
     try {
       const res = await API.get(`/technician/complaints?technicianId=${user.id}&&page=${page}&size=12`);
       setComplaints(res.data.content || []);
@@ -53,6 +59,10 @@ function TechnicianDashboard() {
     } catch (error) {
       console.log(error);
       setComplaints([]);
+      setError("Failed to fetch complaints");
+    } finally {
+      setLoading(false);
+      setError("");
     }
   };
 
@@ -64,6 +74,8 @@ function TechnicianDashboard() {
   };
 
   const handleModalSubmit = async () => {
+    setLoading(true);
+    setError("");
     try {
       if (modalType === "STATUS") {
         await API.put(`/technician/update-status?complaintId=${selectedId}&status=${inputValue}`);
@@ -73,7 +85,11 @@ function TechnicianDashboard() {
       setOpenModal(false);
       fetchComplaints();
     } catch (error) {
-      alert("Action failed. Please try again.");
+      console.log(error);
+      setError("Failed to update complaint");
+    } finally {
+      setLoading(false);
+      setError("");
     }
   };
 
@@ -95,6 +111,22 @@ function TechnicianDashboard() {
       default: return { color: "#6366f1", bg: "#eef2ff", border: "#c7d2fe" };
     }
   };
+
+  if (loading) {
+    return (
+      <Layout>
+        <CommonLoader />
+      </Layout>
+    );
+  }
+
+  if (error) {
+    return (
+      <Layout>
+        <ErrorMessage message={error} />
+      </Layout>
+    );
+  }
 
   return (
     <Layout>

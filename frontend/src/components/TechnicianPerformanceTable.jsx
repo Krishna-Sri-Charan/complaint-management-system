@@ -21,9 +21,14 @@ import {
 
 import { useEffect, useState } from "react";
 import API from "../services/api";
+import Layout from "./Layout";
+import CommonLoader from "./CommonLoader";
+import ErrorMessage from "./ErrorMessage";
 
 function TechnicianPerformanceTable() {
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     fetchPerformance();
@@ -35,6 +40,9 @@ function TechnicianPerformanceTable() {
       setData(res.data.data);
     } catch (error) {
       console.log(error);
+      setError("Failed to fetch technician performance data.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -58,6 +66,14 @@ function TechnicianPerformanceTable() {
 
   // Sort by completion rate descending for ranking
   const sorted = [...data].sort((a, b) => b.completionRate - a.completionRate);
+
+  if (loading) {
+    return <Layout><CommonLoader /></Layout>;
+  }
+
+  if (error) {
+    return <Layout><ErrorMessage message={error} /></Layout>;
+  }
 
   return (
     <Card

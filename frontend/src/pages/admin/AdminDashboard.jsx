@@ -17,6 +17,8 @@ import Menu from "@mui/material/Menu";
 import AdminDashboardAnalytics from "../../components/AdminDashboardAnalytics";
 import TechnicianPerformanceTable from "../../components/TechnicianPerformanceTable";
 import Pagination from "@mui/material/Pagination";
+import CommonLoader from "../../components/CommonLoader";
+import ErrorMessage from "../../components/ErrorMessage";
 
 function AdminDashboard() {
   const navigate = useNavigate();
@@ -32,6 +34,8 @@ function AdminDashboard() {
   const [selectedComplaint, setSelectedComplaint] = useState(null);
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     fetchComplaints();
@@ -48,12 +52,17 @@ function AdminDashboard() {
   };
 
   const fetchComplaints = async () => {
+    setLoading(true);
+    setError("");
     try {
       const res = await API.get(`/complaints?page=${page}&size=12`);
       setComplaints(res.data.data.content);
       setTotalPages(res.data.data.totalPages);
     } catch (error) {
       console.log(error);
+      setError("Failed to fetch complaints.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -74,11 +83,13 @@ function AdminDashboard() {
       setOpenModal(false);
       fetchComplaints();
     } catch (error) {
-      alert("Action failed. Please check your inputs.");
+      setError("Action failed. Please check your inputs.");
     }
   };
 
   const searchComplaints = async () => {
+    setLoading(true);
+    setError("");
     try {
       const res = await API.get(
         `/admin/search?keyword=${keyword}&status=${status}&priority=${priority}`
@@ -86,6 +97,9 @@ function AdminDashboard() {
       setComplaints(res.data.data);
     } catch (error) {
       console.log(error);
+      setError("Failed to search complaints.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -148,6 +162,14 @@ function AdminDashboard() {
         console.log(error);
       }
     };
+
+  if (loading) {
+    return <Layout><CommonLoader /></Layout>;
+  }
+
+  if (error) {
+    return <Layout><ErrorMessage message={error} /></Layout>;
+  }
 
   return (
     <Layout>

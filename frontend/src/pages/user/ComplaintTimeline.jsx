@@ -19,11 +19,14 @@ import {
 import { useParams } from "react-router-dom";
 import API from "../../services/api";
 import Layout from "../../components/Layout";
+import CommonLoader from "../../components/CommonLoader";
+import ErrorMessage from "../../components/ErrorMessage";
 
 function ComplaintTimeline() {
   const { id } = useParams();
   const [updates, setUpdates] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     fetchTimeline();
@@ -35,8 +38,10 @@ function ComplaintTimeline() {
       setUpdates(res.data);
     } catch (error) {
       console.log(error);
+      setError("Failed to fetch timeline updates");
     } finally {
       setLoading(false);
+      setError("");
     }
   };
 
@@ -53,6 +58,22 @@ function ComplaintTimeline() {
       time: d.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }),
     };
   };
+
+  if (loading) {
+    return (
+      <Layout>
+        <CommonLoader />
+      </Layout>
+    );
+  }
+
+  if (error) {
+    return (
+      <Layout>
+        <ErrorMessage message={error} />
+      </Layout>
+    );
+  }
 
   return (
     <Layout>

@@ -29,6 +29,9 @@ import {
 import { useEffect, useState } from "react";
 import API from "../services/api";
 import AdminStatusChart from "./charts/AdminStatusChart";
+import Layout from "./Layout";
+import CommonLoader from "./CommonLoader";
+import ErrorMessage from "./ErrorMessage";
 
 // Custom tooltip for bar chart
 const CustomBarTooltip = ({ active, payload, label }) => {
@@ -66,6 +69,8 @@ function AdminDashboardAnalytics() {
     slowestResolutionHours: 0,
   });
   const [analytics, setAnalytics] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     fetchStats();
@@ -78,6 +83,9 @@ function AdminDashboardAnalytics() {
       setStats(res.data.data);
     } catch (error) {
       console.log(error);
+      setError("Failed to fetch admin dashboard stats.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -87,6 +95,9 @@ function AdminDashboardAnalytics() {
       setAnalytics(res.data.data);
     } catch (error) {
       console.log(error);
+      setError("Failed to fetch analytics data.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -156,6 +167,14 @@ function AdminDashboardAnalytics() {
       border: "#fecaca",
     },
   ];
+
+  if (loading) {
+    return <Layout><CommonLoader /></Layout>;
+  }
+
+  if (error) {
+    return <Layout><ErrorMessage message={error} /></Layout>;
+  }
 
   return (
     <Box sx={{ mb: 5 }}>

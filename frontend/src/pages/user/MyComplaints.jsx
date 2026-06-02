@@ -28,6 +28,8 @@ import API from "../../services/api";
 import Layout from "../../components/Layout";
 import { useNavigate } from "react-router-dom";
 import Pagination from "@mui/material/Pagination";
+import CommonLoader from "../../components/CommonLoader";
+import ErrorMessage from "../../components/ErrorMessage";
 
 function MyComplaints() {
   const [complaints, setComplaints] = useState([]);
@@ -37,6 +39,7 @@ function MyComplaints() {
   const navigate = useNavigate();
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     fetchComplaints();
@@ -47,10 +50,12 @@ function MyComplaints() {
       const res = await API.get(`/complaints/my?page=${page}&size=12`);
       setComplaints(res.data.data.content || []);
       setTotalPages(res.data.data.totalPages || 0);
-      setLoading(false);
     } catch (error) {
-      console.log(error);
+      console.log(error);      
+      setError("Failed to fetch complaints");
+    } finally {
       setLoading(false);
+      setError("");
     }
   };
 
@@ -103,6 +108,22 @@ function MyComplaints() {
         return { color: "#6366f1", bg: "#eef2ff", border: "#c7d2fe" };
     }
   };
+
+  if (error) {
+    return (
+      <Layout>
+        <ErrorMessage message={error} />
+      </Layout>
+    );
+  }
+
+  if (loading) {
+    return (
+      <Layout>
+        <CommonLoader />
+      </Layout>
+    );
+  }
 
   return (
     <Layout>

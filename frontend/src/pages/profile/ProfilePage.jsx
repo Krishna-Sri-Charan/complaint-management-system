@@ -14,6 +14,7 @@ import {
 } from "@mui/icons-material";
 import Layout from "../../components/Layout";
 import API from "../../services/api";
+import ErrorMessage from "../../components/ErrorMessage";
 
 function ProfilePage() {
   const [profile, setProfile] = useState({ name: "", email: "", role: "" });
@@ -22,6 +23,7 @@ function ProfilePage() {
   const [errorMessage, setErrorMessage] = useState("");
   const [showOld, setShowOld] = useState(false);
   const [showNew, setShowNew] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     fetchProfile();
@@ -33,6 +35,10 @@ function ProfilePage() {
       setProfile(res.data.data);
     } catch (error) {
       console.log(error);
+      setError("Failed to fetch profile");
+    }
+    finally {
+      setError("");
     }
   };
 
@@ -42,7 +48,10 @@ function ProfilePage() {
       setSuccessMessage("Profile updated successfully");
       setErrorMessage("");
     } catch (error) {
-      setErrorMessage("Failed to update profile");
+      setError("Failed to update profile");
+    }
+    finally {
+      setError("");
     }
   };
 
@@ -53,7 +62,10 @@ function ProfilePage() {
       setErrorMessage("");
       setPasswordData({ oldPassword: "", newPassword: "" });
     } catch (error) {
-      setErrorMessage("Failed to change password");
+      setError("Failed to change password");
+    }
+    finally {
+      setError("");
     }
   };
 

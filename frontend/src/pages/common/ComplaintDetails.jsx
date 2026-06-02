@@ -33,6 +33,7 @@ import { useParams } from "react-router-dom";
 
 import Layout from "../../components/Layout";
 import API from "../../services/api";
+import ErrorMessage from "../../components/ErrorMessage";
 
 function ComplaintDetails() {
   const { id } = useParams();
@@ -42,6 +43,9 @@ function ComplaintDetails() {
   const [loading, setLoading] = useState(true);
   const [comments, setComments] = useState([]);
   const [commentText, setCommentText] = useState("");
+  const [error, setError] = useState("");
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [actionLoading, setActionLoading] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -57,6 +61,7 @@ function ComplaintDetails() {
       setComments(commentsRes.data.data || []);
     } catch (error) {
       console.log(error);
+      setError("Failed to fetch complaint details.");
     } finally {
       setLoading(false);
     }
@@ -135,6 +140,10 @@ function ComplaintDetails() {
     } catch(error) {
 
       console.log(error);
+      setError("Failed to add comment.");
+    }
+    finally {
+      setActionLoading(false);
     }
   };
 
@@ -163,6 +172,16 @@ function ComplaintDetails() {
           >
             Complaint not found. It may have been removed or you don't have access.
           </Alert>
+        </Box>
+      </Layout>
+    );
+  }
+
+  if (error) {
+    return (
+      <Layout>
+        <Box sx={{ maxWidth: 600, mx: "auto", mt: 6 }}>
+          <ErrorMessage message={error} />
         </Box>
       </Layout>
     );
