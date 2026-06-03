@@ -1,70 +1,257 @@
-# Getting Started with Create React App
+# Complaint Management System
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Overview
 
-## Available Scripts
+A full-stack Complaint Management System designed to streamline complaint registration, assignment, tracking, and resolution processes. The application supports role-based access for Users, Technicians, and Administrators, incorporates AI-powered complaint categorization and troubleshooting suggestions, and provides real-time notifications and analytics dashboards.
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## Key Features
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### Authentication & Security
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+* JWT-based Authentication and Authorization
+* Role-Based Access Control (User, Technician, Admin)
+* BCrypt Password Encryption
+* Protected APIs using Spring Security
+* Axios Interceptors for Secure API Communication
 
-### `npm test`
+### Complaint Management
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+* Create and Track Complaints
+* Upload Complaint Attachments
+* Complaint Status Management
+* Complaint Timeline Tracking
+* Complaint Details View
+* Pagination Support
+* Search and Filtering
 
-### `npm run build`
+### User Features
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+* Create Complaints
+* View Complaint History
+* Track Complaint Progress
+* Manage Profile Information
+* Change Password
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Technician Features
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+* View Assigned Complaints
+* Update Complaint Status
+* Add Work Notes and Comments
+* Track Assigned Tasks
 
-### `npm run eject`
+### Admin Features
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+* View and Manage All Complaints
+* Assign Technicians
+* Update Complaint Status
+* Dashboard Analytics
+* Technician Performance Analytics
+* Export Reports to Excel
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### AI Features
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+* AI-Based Complaint Categorization
+* AI Troubleshooting Suggestions
+* Powered by Groq API (Llama 3.3 70B Versatile)
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### Notifications
 
-## Learn More
+* Email Notifications
+* Real-Time WebSocket Notifications
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Analytics & Reporting
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+* Complaint Statistics Dashboard
+* Resolution Time Analytics
+* Complaint Status Distribution
+* Technician Performance Metrics
+* Export Reports to Excel
 
-### Code Splitting
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## Tech Stack
 
-### Analyzing the Bundle Size
+### Frontend
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+* React.js
+* Material UI (MUI)
+* Axios
+* React Router
+* Recharts
 
-### Making a Progressive Web App
+### Backend
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+* Spring Boot
+* Spring Security
+* Spring Data JPA
+* JWT Authentication
+* WebSocket (STOMP)
+* Java Mail Sender
 
-### Advanced Configuration
+### Database
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+* MySQL
 
-### Deployment
+### AI Integration
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+* Groq API
+* Llama-3.3-70B-Versatile
 
-### `npm run build` fails to minify
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## System Architecture
+
+```text
+React Frontend
+       │
+       ▼
+Spring Boot REST APIs
+       │
+ ┌─────┼─────┐
+ ▼     ▼     ▼
+MySQL  AI   WebSocket
+Database API Notifications
+```
+
+---
+
+## Project Modules
+
+### User Module
+
+* Register/Login
+* Create Complaint
+* View My Complaints
+* Complaint Details
+* Comments & Timeline
+* Profile Management
+
+### Technician Module
+
+* Assigned Complaints
+* Status Updates
+* Work Notes
+* Complaint Resolution
+
+### Admin Module
+
+* Complaint Management
+* Technician Assignment
+* Dashboard Analytics
+* Report Export
+* Performance Monitoring
+
+---
+
+## Installation
+
+### Backend Setup
+
+```bash
+git clone <repository-url>
+
+cd backend
+
+mvn clean install
+
+mvn spring-boot:run
+```
+
+### Frontend Setup
+
+```bash
+cd frontend
+
+npm install
+
+npm start
+```
+
+---
+
+## Environment Variables
+
+### Frontend (.env)
+
+```env
+REACT_APP_API_URL=http://localhost:8080/api/v1
+```
+
+### Backend (application.properties)
+
+```properties
+spring.datasource.url=
+spring.datasource.username=
+spring.datasource.password=
+
+jwt.secret=
+
+groq.api.key=
+
+spring.mail.username=
+spring.mail.password=
+```
+
+---
+
+## API Highlights
+
+### Authentication
+
+* POST /api/v1/auth/register
+* POST /api/v1/auth/login
+
+### Complaints
+
+* POST /api/v1/complaints
+* GET /api/v1/complaints/my
+* GET /api/v1/complaints/{id}
+
+### Admin
+
+* PUT /api/v1/admin/assign-technician
+* PUT /api/v1/admin/update-status
+
+### Technician
+
+* GET /api/v1/technician/complaints
+* PUT /api/v1/technician/update-status
+
+### Analytics
+
+* GET /api/v1/analytics/dashboard
+* GET /api/v1/analytics/technician-performance
+
+---
+
+## Future Enhancements
+
+* Docker Containerization
+* Cloud Deployment
+* Mobile Application
+* Advanced Reporting
+* Audit Logs
+* Multi-Tenant Support
+
+---
+
+## Author
+
+**Charan Yerramsetti**
+
+Java Full Stack Developer
+
+* Java
+* Spring Boot
+* React.js
+* MySQL
+* AI Integration
+* REST APIs
+
+---
+
+## License
+
+This project is developed for educational and portfolio purposes.
