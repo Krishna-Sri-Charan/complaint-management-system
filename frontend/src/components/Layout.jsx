@@ -12,6 +12,7 @@ import {
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import stompClient from "../services/socket";
+import { logout } from "../utils/auth";
 
 const drawerWidth = 260;
 
@@ -20,11 +21,6 @@ function Layout({ children }) {
   const location = useLocation();
   const { user, logout } = useAuth();
   const [notification, setNotification] = useState("");
-
-  const handleLogout = () => {
-    logout();
-    navigate("/");
-  };
 
   useEffect(() => {
     stompClient.onConnect = () => {
@@ -254,7 +250,7 @@ function Layout({ children }) {
           {/* Logout */}
           <ListItem disablePadding>
             <ListItemButton
-              onClick={handleLogout}
+              onClick={logout}
               sx={{
                 borderRadius: "10px",
                 px: 1.5,
