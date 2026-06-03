@@ -14,6 +14,7 @@ import ComplaintDetails from "./pages/common/ComplaintDetails";
 import ProfilePage from "./pages/profile/ProfilePage";
 
 import ProtectedRoute from "./components/ProtectedRoute";
+import NotFound from "./pages/NotFound";
 
 function App() {
 
@@ -91,6 +92,8 @@ function App() {
           path="/profile"
           element={<ProfilePage />}
         />
+
+        <Route path="*" element={<NotFound />} />
 
       </Routes>
 
