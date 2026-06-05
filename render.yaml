@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: complaint-management-system
+    runtime: java
+
+    rootDir: backend
+
+    buildCommand: ./mvnw clean package -DskipTests
+
+    startCommand: java -jar target/*.jar
+
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
