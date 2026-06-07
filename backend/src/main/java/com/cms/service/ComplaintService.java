@@ -205,15 +205,16 @@ public class ComplaintService {
                 .orElseThrow(() -> new ResourceNotFoundException("Complaint not found"));
 
         complaint.setStatus(status);
+
+        complaintUpdateService.addUpdate(
+                complaint,
+                "Status changed to " + status,
+                complaint.getUser()
+        );
         
         notificationService.sendNotification(
                 "Complaint #" + complaint.getId()
                         + " updated to "
-                        + status
-        );
-        
-        notificationService.sendNotification(
-                "Complaint status updated to "
                         + status
         );
         
