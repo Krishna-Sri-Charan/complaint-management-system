@@ -108,12 +108,25 @@ public class ComplaintService {
         
         try {
 
-            emailService.sendEmail(
-                    user.getEmail(),
-                    "Complaint Created Successfully",
-                    "Your complaint '" + complaint.getTitle()
-                            + "' has been registered successfully."
-            );
+        	emailService.sendEmail(
+        		    user.getEmail(),
+        		    "Complaint Submitted Successfully | ResolveFlow AI",
+
+        		    "Hello " + user.getName() + ",\n\n"
+
+        		    + "Your complaint has been successfully submitted in ResolveFlow AI.\n\n"
+
+        		    + "Complaint Details:\n"
+        		    + "---------------------------------\n"
+        		    + "Complaint ID: #" + savedComplaint.getId() + "\n"
+        		    + "Title: " + savedComplaint.getTitle() + "\n"
+        		    + "Priority: " + savedComplaint.getPriority() + "\n"
+        		    + "Status: OPEN\n\n"
+
+        		    + "Our team will review your complaint and keep you informed of all updates.\n\n"
+
+        		    + "Thank you for using ResolveFlow AI."
+        		);
 
         } catch (Exception e) {
 
@@ -184,11 +197,21 @@ public class ComplaintService {
         );
         
         emailService.sendEmail(
-                complaint.getUser().getEmail(),
-                "Technician Assigned",
-                "Your complaint has been assigned to technician "
-                        + technician.getName()
-        );
+        	    complaint.getUser().getEmail(),
+        	    "Technician Assigned | ResolveFlow AI",
+
+        	    "Hello " + complaint.getUser().getName() + ",\n\n"
+
+        	    + "A technician has been assigned to your complaint.\n\n"
+
+        	    + "Complaint Details:\n"
+        	    + "---------------------------------\n"
+        	    + "Complaint ID: #" + complaint.getId() + "\n"
+        	    + "Title: " + complaint.getTitle() + "\n"
+        	    + "Assigned Technician: " + technician.getName() + "\n\n"
+
+        	    + "The technician will begin reviewing and resolving the issue shortly."
+        	);
         
         notificationService.sendNotification(
                 "Complaint #" + complaint.getId()
@@ -224,12 +247,25 @@ public class ComplaintService {
                     LocalDateTime.now()
             );
 
-            emailService.sendEmail(
-                    complaint.getUser().getEmail(),
-                    "Complaint Resolved",
-                    "Your complaint '" + complaint.getTitle()
-                            + "' has been resolved."
-            );
+        	emailService.sendEmail(
+        		    complaint.getUser().getEmail(),
+        		    "Complaint Resolved | ResolveFlow AI",
+
+        		    "Hello " + complaint.getUser().getName() + ",\n\n"
+
+        		    + "Great news! Your complaint has been marked as resolved.\n\n"
+
+        		    + "Complaint Details:\n"
+        		    + "---------------------------------\n"
+        		    + "Complaint ID: #" + complaint.getId() + "\n"
+        		    + "Title: " + complaint.getTitle() + "\n"
+        		    + "Status: RESOLVED\n"
+        		    + "Resolved On: " + LocalDateTime.now() + "\n\n"
+
+        		    + "If the issue still persists, please create a new complaint or contact support.\n\n"
+
+        		    + "Thank you for using ResolveFlow AI."
+        		);
         }
 
         return complaintRepository.save(complaint);

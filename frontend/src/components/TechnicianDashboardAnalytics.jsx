@@ -7,7 +7,6 @@ import {
   TrendingUpOutlined,
 } from "@mui/icons-material";
 import API from "../services/api";
-import Layout from "./Layout";
 import CommonLoader from "./CommonLoader";
 import ErrorMessage from "./ErrorMessage";
 
@@ -59,10 +58,7 @@ function TechnicianDashboardAnalytics() {
     },
     {
       title: "Completion Rate",
-      value:
-        stats?.completionRate !== undefined
-          ? `${stats.completionRate.toFixed(1)}%`
-          : "0%",
+      value: stats?.completionRate !== undefined ? `${stats.completionRate.toFixed(1)}%` : "0%",
       icon: <TrendingUpOutlined sx={{ fontSize: 22 }} />,
       color: "#8b5cf6",
       bg: "#f5f3ff",
@@ -70,33 +66,31 @@ function TechnicianDashboardAnalytics() {
     },
   ];
 
-  if (loading) {
-    return <Layout><CommonLoader /></Layout>;
-  }
-
-  if (error) {
-    return <Layout><ErrorMessage message={error} /></Layout>;
-  }
+  if (loading) return <CommonLoader />;
+  if (error) return <ErrorMessage message={error} />;
 
   return (
     <Box sx={{ mb: 5 }}>
       <Grid container spacing={3}>
         {cards.map((card) => (
-          <Grid item xs={12} sm={6} md={3} key={card.title}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }} key={card.title} sx={{ display: "flex" }}>
             <Card
               sx={{
                 borderRadius: 3,
                 border: `1px solid ${card.border}`,
                 bgcolor: card.bg,
                 boxShadow: "none",
-                transition: "transform 0.2s",
+                width: "100%", // Explicitly stretches card width inside track grid bounds
+                display: "flex",
+                flexDirection: "column",
+                transition: "transform 0.2s, box-shadow 0.2s",
                 "&:hover": {
                   transform: "translateY(-3px)",
                   boxShadow: `0 8px 24px ${card.color}18`,
                 },
               }}
             >
-              <CardContent sx={{ p: 3 }}>
+              <CardContent sx={{ p: 3, flexGrow: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
                 <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
                   <Box>
                     <Typography

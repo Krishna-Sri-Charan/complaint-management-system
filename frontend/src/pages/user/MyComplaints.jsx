@@ -1,28 +1,11 @@
 import { useEffect, useState, useCallback } from "react";
 import {
-  Box,
-  Typography,
-  Card,
-  CardContent,
-  Chip,
-  Grid,
-  Stack,
-  Skeleton,
-  IconButton,
-  Button,
-  Tooltip,
-  Divider,
-  Menu,
-  MenuItem,
+  Box, Typography, Card, CardContent, Chip, Grid, Stack, 
+  IconButton, Button, Divider, Menu, MenuItem
 } from "@mui/material";
 import {
-  MoreVert,
-  ErrorOutline,
-  CheckCircleOutline,
-  PendingActions,
-  FlagOutlined,
-  InboxOutlined,
-  Timeline,
+  MoreVert, ErrorOutline, CheckCircleOutline, PendingActions, 
+  FlagOutlined, InboxOutlined, Timeline, VisibilityOutlined
 } from "@mui/icons-material";
 import API from "../../services/api";
 import Layout from "../../components/Layout";
@@ -51,7 +34,6 @@ function MyComplaints() {
       setError("Failed to fetch complaints");
     } finally {
       setLoading(false);
-      setError("");
     }
   }, [page]);
 
@@ -72,384 +54,149 @@ function MyComplaints() {
   const getStatusConfig = (status) => {
     switch (status?.toUpperCase()) {
       case "RESOLVED":
-        return {
-          color: "#16a34a",
-          bg: "#dcfce7",
-          border: "#bbf7d0",
-          icon: <CheckCircleOutline sx={{ fontSize: 14 }} />,
-          label: "Resolved",
-        };
+        return { color: "#16a34a", bg: "#ecfdf5", border: "#a7f3d0", icon: <CheckCircleOutline sx={{ fontSize: 13 }} />, label: "Resolved" };
       case "IN_PROGRESS":
-        return {
-          color: "#d97706",
-          bg: "#fef3c7",
-          border: "#fde68a",
-          icon: <PendingActions sx={{ fontSize: 14 }} />,
-          label: "In Progress",
-        };
+        return { color: "#d97706", bg: "#fffbeb", border: "#fde68a", icon: <PendingActions sx={{ fontSize: 13 }} />, label: "In Progress" };
       default:
-        return {
-          color: "#6366f1",
-          bg: "#eef2ff",
-          border: "#c7d2fe",
-          icon: <ErrorOutline sx={{ fontSize: 14 }} />,
-          label: "Pending",
-        };
+        return { color: "#6366f1", bg: "#eef2ff", border: "#c7d2fe", icon: <ErrorOutline sx={{ fontSize: 13 }} />, label: "Pending" };
     }
   };
 
   const getPriorityConfig = (priority) => {
     switch (priority?.toUpperCase()) {
-      case "HIGH":
-        return { color: "#dc2626", bg: "#fee2e2", border: "#fecaca" };
-      case "MEDIUM":
-        return { color: "#d97706", bg: "#fef3c7", border: "#fde68a" };
-      default:
-        return { color: "#6366f1", bg: "#eef2ff", border: "#c7d2fe" };
+      case "HIGH": return { color: "#dc2626", bg: "#fee2e2", border: "#fecaca", barColor: "#ef4444" };
+      case "MEDIUM": return { color: "#d97706", bg: "#fffbeb", border: "#fde68a", barColor: "#f59e0b" };
+      default: return { color: "#6366f1", bg: "#eef2ff", border: "#c7d2fe", barColor: "#6366f1" };
     }
   };
 
-  if (error) {
-    return (
-      <Layout>
-        <ErrorMessage message={error} />
-      </Layout>
-    );
-  }
-
-  if (loading) {
-    return (
-      <Layout>
-        <CommonLoader />
-      </Layout>
-    );
-  }
+  if (error) return <Layout><ErrorMessage message={error} /></Layout>;
+  if (loading) return <Layout><CommonLoader /></Layout>;
 
   return (
     <Layout>
-      <Box sx={{ maxWidth: 1100, margin: "0 auto" }}>
+      <Box sx={{ maxWidth: 1200, margin: "0 auto", px: { xs: 1, sm: 2 } }}>
 
-        {/* Header */}
-        <Box
-          sx={{
-            mb: 4,
-            pb: 3,
-            borderBottom: "2px solid #f1f5f9",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            flexWrap: "wrap",
-            gap: 2,
-          }}
-        >
+        {/* Section Header */}
+        <Box sx={{ mb: 4, pb: 2.5, borderBottom: "1px solid #e2e8f0", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 2 }}>
           <Box>
             <Typography variant="h4" sx={{ fontWeight: 800, color: "#0f172a", letterSpacing: "-0.5px" }}>
-              My Complaints
+              My Complaints History
             </Typography>
-            <Typography variant="body2" color="textSecondary" sx={{ mt: 0.5 }}>
-              Track and manage your submitted complaints
+            <Typography variant="body2" sx={{ color: "#64748b", mt: 0.5 }}>
+              Track lifecycle history, operational assignments, and core developer timeline notations.
             </Typography>
           </Box>
-          {!loading && complaints.length > 0 && (
-            <Chip
-              label={`${complaints.length} Total`}
-              sx={{
-                bgcolor: "#eef2ff",
-                color: "#6366f1",
-                fontWeight: 700,
-                fontSize: "0.8rem",
-                borderRadius: "10px",
-                height: 32,
-                border: "1px solid #c7d2fe",
-              }}
-            />
+          {complaints.length > 0 && (
+            <Chip label={`${complaints.length} Records Total`} sx={{ bgcolor: "#f1f5f9", color: "#334155", fontWeight: 700, fontSize: "0.75rem", borderRadius: "6px", height: 28, border: "1px solid #cbd5e1" }} />
           )}
         </Box>
 
-        {/* Loading skeletons */}
-        {loading ? (
-          <Grid container spacing={2.5}>
-            {[1, 2, 3, 4].map((i) => (
-              <Grid item xs={12} sm={6} key={i}>
-                <Skeleton variant="rounded" height={220} sx={{ borderRadius: 3 }} />
-              </Grid>
-            ))}
-          </Grid>
-
-        /* Empty state */
-        ) : complaints.length === 0 ? (
-          <Box
-            sx={{
-              textAlign: "center",
-              py: 12,
-              px: 4,
-              borderRadius: 4,
-              bgcolor: "#f8fafc",
-              border: "2px dashed #e2e8f0",
-            }}
-          >
-            <Box
-              sx={{
-                width: 72,
-                height: 72,
-                borderRadius: "20px",
-                bgcolor: "#eef2ff",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                margin: "0 auto 20px",
-              }}
-            >
-              <InboxOutlined sx={{ fontSize: 36, color: "#6366f1" }} />
+        {/* Empty State Block */}
+        {complaints.length === 0 ? (
+          <Box sx={{ textAlign: "center", py: 10, px: 4, borderRadius: 4, bgcolor: "#fff", border: "1px dashed #cbd5e1" }}>
+            <Box sx={{ width: 64, height: 64, borderRadius: "50%", bgcolor: "#eef2ff", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px" }}>
+              <InboxOutlined sx={{ fontSize: 32, color: "#6366f1" }} />
             </Box>
-            <Typography variant="h6" sx={{ fontWeight: 700, color: "#0f172a", mb: 1 }}>
-              No complaints found
-            </Typography>
-            <Typography variant="body2" color="textSecondary">
-              Everything looks good! File a complaint if you encounter any issues.
-            </Typography>
-            <Button
-              variant="contained"
-              onClick={() => navigate("/create-complaint")}
-              sx={{
-                mt: 3,
-                borderRadius: 2,
-                bgcolor: "#6366f1",
-                fontWeight: 700,
-                px: 4,
-                "&:hover": { bgcolor: "#4f46e5" },
-              }}
-            >
-              File a Complaint
+            <Typography variant="subtitle1" sx={{ fontWeight: 700, color: "#0f172a", mb: 0.5 }}>No logged tickets detected</Typography>
+            <Typography variant="body2" color="textSecondary" sx={{ mb: 3 }}>Your issue portfolio log is clear. Create a complaint to route a ticket to our technicians.</Typography>
+            <Button variant="contained" disableElevation onClick={() => navigate("/create-complaint")} sx={{ borderRadius: "8px", bgcolor: "#6366f1", fontWeight: 600, px: 3, textTransform: "none", "&:hover": { bgcolor: "#4f46e5" } }}>
+              File an Issue Ticket
             </Button>
           </Box>
-
-        /* Cards grid */
         ) : (
-          <>
-            <Grid container spacing={2.5}>
-              {complaints.map((c) => {
-                const statusCfg = getStatusConfig(c.status);
-                const priorityCfg = getPriorityConfig(c.priority);
-                return (
-                  <Grid item xs={12} sm={6} key={c.id} sx={{ display: "flex" }}>
-                    <Card
-                      sx={{
-                        width: "100%",
-                        display: "flex",
-                        flexDirection: "column",
-                        borderRadius: 3,
-                        border: "1px solid #f1f5f9",
-                        boxShadow: "0px 2px 8px rgba(0,0,0,0.04)",
-                        transition: "transform 0.2s ease, box-shadow 0.2s ease",
-                        "&:hover": {
-                          transform: "translateY(-2px)",
-                          boxShadow: "0px 12px 32px rgba(0,0,0,0.08)",
-                        },
-                      }}
-                    >
-                      <CardContent
-                        sx={{
-                          p: 3,
-                          display: "flex",
-                          flexDirection: "column",
-                          flex: 1,
-                          "&:last-child": { pb: 3 },
-                        }}
-                      >
-                        {/* Row 1: Chips + Menu */}
-                        <Stack
-                          direction="row"
-                          justifyContent="space-between"
-                          alignItems="flex-start"
-                          sx={{ mb: 1.5 }}
-                        >
-                          <Stack direction="row" flexWrap="wrap" gap={0.6}>
-                            <Chip
-                              label={statusCfg.label}
-                              size="small"
-                              icon={statusCfg.icon}
-                              sx={{
-                                bgcolor: statusCfg.bg,
-                                color: statusCfg.color,
-                                border: `1px solid ${statusCfg.border}`,
-                                fontWeight: 700,
-                                borderRadius: "7px",
-                                height: 22,
-                                fontSize: "0.7rem",
-                                "& .MuiChip-icon": { color: statusCfg.color, fontSize: 13 },
-                              }}
-                            />
-                            <Chip
-                              label={`${c.priority || "LOW"} Priority`}
-                              size="small"
-                              icon={<FlagOutlined sx={{ fontSize: "13px !important" }} />}
-                              sx={{
-                                bgcolor: priorityCfg.bg,
-                                color: priorityCfg.color,
-                                border: `1px solid ${priorityCfg.border}`,
-                                fontWeight: 700,
-                                borderRadius: "7px",
-                                height: 22,
-                                fontSize: "0.7rem",
-                                "& .MuiChip-icon": { color: priorityCfg.color },
-                              }}
-                            />
-                          </Stack>
-
-                          <Tooltip title="More options">
-                            <IconButton
-                              size="small"
-                              onClick={(e) => handleMenuOpen(e, c.id)}
-                              sx={{
-                                ml: 1,
-                                flexShrink: 0,
-                                border: "1px solid #e2e8f0",
-                                borderRadius: "8px",
-                                width: 28,
-                                height: 28,
-                                color: "#94a3b8",
-                                "&:hover": { bgcolor: "#f1f5f9", color: "#475569" },
-                              }}
-                            >
-                              <MoreVert sx={{ fontSize: 16 }} />
-                            </IconButton>
-                          </Tooltip>
+          /* Cards Grid Row Track Sizing Allocation */
+          <Grid container spacing={3}>
+            {complaints.map((c) => {
+              const statusCfg = getStatusConfig(c.status);
+              const priorityCfg = getPriorityConfig(c.priority);
+              return (
+                <Grid size={{ xs: 12, md: 6 }} key={c.id} sx={{ display: "flex" }}>
+                  <Card
+                    sx={{
+                      width: "100%",
+                      display: "flex",
+                      flexDirection: "column",
+                      borderRadius: 3,
+                      border: "1px solid #e2e8f0",
+                      boxShadow: "none",
+                      position: "relative",
+                      overflow: "hidden",
+                      transition: "all 0.2s ease-in-out",
+                      "&:hover": { transform: "translateY(-3px)", boxShadow: "0px 12px 24px rgba(15,23,42,0.04)", borderColor: "#cbd5e1" },
+                      "&::before": {
+                        content: '""',
+                        position: "absolute",
+                        left: 0, top: 0, bottom: 0,
+                        width: "4px", // Adaptive vertical alignment color strip
+                        backgroundColor: priorityCfg.barColor
+                      }
+                    }}
+                  >
+                    <CardContent sx={{ p: 3, display: "flex", flexDirection: "column", flex: 1, "&:last-child": { pb: 3 } }}>
+                      {/* Row 1: Badges */}
+                      <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 2 }}>
+                        <Stack direction="row" spacing={1}>
+                          <Chip label={statusCfg.label} size="small" icon={statusCfg.icon} sx={{ bgcolor: statusCfg.bg, color: statusCfg.color, border: `1px solid ${statusCfg.border}`, fontWeight: 700, borderRadius: "6px", height: 22, fontSize: "0.68rem", "& .MuiChip-icon": { color: statusCfg.color } }} />
+                          <Chip label={c.priority || "LOW"} size="small" icon={<FlagOutlined sx={{ fontSize: "12px !important" }} />} sx={{ bgcolor: priorityCfg.bg, color: priorityCfg.color, border: `1px solid ${priorityCfg.border}`, fontWeight: 700, borderRadius: "6px", height: 22, fontSize: "0.68rem", "& .MuiChip-icon": { color: priorityCfg.color } }} />
                         </Stack>
+                        <IconButton size="small" onClick={(e) => handleMenuOpen(e, c.id)} sx={{ border: "1px solid #e2e8f0", borderRadius: "8px", width: 30, height: 30, color: "#64748b", "&:hover": { bgcolor: "#f1f5f9" } }}>
+                          <MoreVert sx={{ fontSize: 18 }} />
+                        </IconButton>
+                      </Stack>
 
-                        {/* Row 2: Title — 1 line, ellipsis */}
-                        <Typography
-                          variant="subtitle1"
-                          sx={{
-                            fontWeight: 700,
-                            color: "#0f172a",
-                            fontSize: "0.95rem",
-                            mb: 0.5,
-                            whiteSpace: "nowrap",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            flexShrink: 0,
-                          }}
-                        >
-                          {c.title}
-                        </Typography>
+                      {/* Row 2: Header Texts */}
+                      <Typography variant="h6" sx={{ fontWeight: 700, color: "#0f172a", fontSize: "1rem", mb: 0.5, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                        {c.title}
+                      </Typography>
+                      <Typography variant="caption" color="textSecondary" fontWeight={600} sx={{ letterSpacing: "0.3px", mb: 2 }}>
+                        Tracking ID: #{c.id}
+                      </Typography>
 
-                        {/* Row 3: Description — hard 2-line cap, ellipsis */}
-                        <Typography
-                          variant="body2"
-                          color="textSecondary"
-                          sx={{
-                            lineHeight: 1.6,
-                            display: "-webkit-box",
-                            WebkitLineClamp: 2,
-                            WebkitBoxOrient: "vertical",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            height: "3.2em",   /* exactly 2 lines — keeps all cards aligned */
-                            flexShrink: 0,
-                          }}
-                        >
-                          {c.description || "No description provided."}
-                        </Typography>
+                      {/* Row 3: Text Statement */}
+                      <Typography variant="body2" sx={{ color: "#475569", lineHeight: 1.6, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", textOverflow: "ellipsis", height: "3.2em", mb: 2 }}>
+                        {c.description || "No description text logged for this file asset."}
+                      </Typography>
 
-                        {/* Row 4: Attachment or fixed-height placeholder */}
-                        <Box sx={{ mt: 1.5, flexShrink: 0, height: c.attachmentUrl ? "auto" : 0 }}>
-                          {c.attachmentUrl && (
-                            <img
-                              src={`http://localhost:8080/uploads/${c.attachmentUrl}`}
-                              alt="attachment"
-                              style={{
-                                width: "100%",
-                                maxHeight: 100,
-                                objectFit: "cover",
-                                borderRadius: "8px",
-                                border: "1px solid #e2e8f0",
-                                display: "block",
-                              }}
-                            />
-                          )}
+                      {/* Row 4: Image Attachment Block Preview */}
+                      {c.attachmentUrl && (
+                        <Box sx={{ mt: 1, mb: 2, borderRadius: "6px", overflow: "hidden", border: "1px solid #e2e8f0" }}>
+                          <img src={`http://localhost:8080/uploads/${c.attachmentUrl}`} alt="attachment" style={{ width: "100%", maxHeight: 110, objectFit: "cover", display: "block" }} />
                         </Box>
+                      )}
 
-                        {/* Spacer: pushes divider + button to bottom */}
-                        <Box sx={{ flexGrow: 1 }} />
+                      <Box sx={{ flexGrow: 1 }} />
+                      <Divider sx={{ mb: 2, borderColor: "#f1f5f9" }} />
 
-                        <Divider sx={{ my: 2, borderColor: "#f1f5f9" }} />
-
-                        {/* Row 5: Action button */}
-                        <Button
-                          variant="outlined"
-                          size="small"
-                          fullWidth
-                          startIcon={<Timeline sx={{ fontSize: 15 }} />}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            navigate(`/complaint/${c.id}/timeline`);
-                          }}
-                          sx={{
-                            borderRadius: 2,
-                            fontWeight: 700,
-                            fontSize: "0.78rem",
-                            borderColor: "#c7d2fe",
-                            color: "#6366f1",
-                            flexShrink: 0,
-                            "&:hover": { borderColor: "#6366f1", bgcolor: "#eef2ff" },
-                          }}
-                        >
-                          View Timeline
-                        </Button>
-                      </CardContent>
-                    </Card>
-                  </Grid>
-                );
-              })}
-            </Grid>
-
-            <Box
-              display="flex"
-              justifyContent="center"
-              mt={4}
-            >
-
-              <Pagination
-                count={totalPages}
-                page={page + 1}
-                onChange={(_, value) => {
-
-                  setPage(value - 1);
-
-                }}
-                color="primary"
-              />
-
-            </Box>
-
-            {/* Single Menu instance — outside the map loop */}
-            <Menu
-              anchorEl={anchorEl}
-              open={Boolean(anchorEl)}
-              onClose={handleMenuClose}
-              PaperProps={{
-                sx: {
-                  borderRadius: 2,
-                  boxShadow: "0 8px 24px rgba(0,0,0,0.1)",
-                  border: "1px solid #f1f5f9",
-                  minWidth: 170,
-                  mt: 0.5,
-                },
-              }}
-            >
-              <MenuItem
-                onClick={() => {
-                  navigate(`/complaints/${selectedComplaint}`);
-                  handleMenuClose();
-                }}
-                sx={{ fontSize: "0.85rem", fontWeight: 600, color: "#0f172a", borderRadius: 1, mx: 0.5 }}
-              >
-                View Full Details
-              </MenuItem>
-            </Menu>
-          </>
+                      {/* Row 5: Action Button Link */}
+                      <Button
+                        variant="outlined" size="small" fullWidth startIcon={<Timeline sx={{ fontSize: 14 }} />}
+                        onClick={(e) => { e.stopPropagation(); navigate(`/complaint/${c.id}/timeline`); }}
+                        sx={{ borderRadius: "8px", fontWeight: 600, py: 1, fontSize: "0.75rem", borderColor: "#cbd5e1", color: "#475569", "&:hover": { borderColor: "#94a3b8", bgcolor: "#f8fafc" } }}
+                      >
+                        Audit Progress Timeline
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              );
+            })}
+          </Grid>
         )}
+
+        {/* Pagination Track Row */}
+        {totalPages > 1 && (
+          <Box display="flex" justifyContent="center" mt={5}>
+            <Pagination count={totalPages} page={page + 1} onChange={(_, value) => setPage(value - 1)} color="primary" sx={{ "& .MuiPaginationItem-root": { borderRadius: "8px", fontWeight: 600 } }} />
+          </Box>
+        )}
+
+        {/* Floating Actions Content Overlays Option Menu */}
+        <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose} elevation={3} slotProps={{ paper: { sx: { borderRadius: "10px", border: "1px solid #e2e8f0", minWidth: 160 } } }}>
+          <MenuItem onClick={() => { navigate(`/complaints/${selectedComplaint}`); handleMenuClose(); }} sx={{ gap: 1.5, fontSize: "0.85rem", fontWeight: 500, color: "#334155", mx: 0.5, borderRadius: 1 }}>
+            <VisibilityOutlined sx={{ fontSize: 18, color: "#64748b" }} /> View Full Details
+          </MenuItem>
+        </Menu>
       </Box>
     </Layout>
   );

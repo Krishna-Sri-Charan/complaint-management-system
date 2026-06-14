@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   TextField, Button, Box, Typography, Paper,
   Link, MenuItem, Stack, InputAdornment, IconButton,
@@ -10,7 +11,7 @@ import {
   BadgeOutlined,
 } from "@mui/icons-material";
 import API from "../../services/api";
-import { useNavigate } from "react-router-dom";
+import logo from "../../assets/resolveflow-logo.png";
 
 function RegisterPage() {
   const navigate = useNavigate();
@@ -36,7 +37,7 @@ function RegisterPage() {
   };
 
   const roleOptions = [
-    { value: "USER", label: "Student / User", color: "#6366f1", bg: "#eef2ff" },
+    { value: "USER", label: "User", color: "#6366f1", bg: "#eef2ff" },
     { value: "TECHNICIAN", label: "Technician", color: "#d97706", bg: "#fef3c7" },
     { value: "ADMIN", label: "Administrator", color: "#dc2626", bg: "#fee2e2" },
   ];
@@ -50,7 +51,7 @@ function RegisterPage() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        background: "linear-gradient(135deg, #022c22 0%, #064e3b 50%, #065f46 100%)",
+        background: "linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%)",
         p: 2,
         position: "relative",
         overflow: "hidden",
@@ -63,14 +64,39 @@ function RegisterPage() {
       <Box sx={{ width: "100%", maxWidth: 460, position: "relative", zIndex: 1 }}>
         {/* Logo */}
         <Stack alignItems="center" sx={{ mb: 3 }}>
+          <Box
+            component="img"
+            src={logo}
+            alt="ResolveFlow AI"
+            sx={{
+              width: 100,
+              height: 100,
+              mb: 1.5,
+              objectFit: "contain",
+              filter: "drop-shadow(0 8px 24px rgba(16,185,129,0.35))",
+            }}
+          />
+
           <Typography
-            variant="h5"
-            sx={{ fontWeight: 800, color: "#fff", letterSpacing: "-0.3px" }}
+            variant="h4"
+            sx={{
+              fontWeight: 800,
+              color: "#fff",
+              letterSpacing: "-0.5px",
+            }}
           >
-            CMS Portal
+            ResolveFlow AI
           </Typography>
-          <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.45)", mt: 0.3 }}>
-            Create your account
+
+          <Typography
+            variant="body2"
+            sx={{
+              color: "rgba(255,255,255,0.7)",
+              mt: 0.5,
+              textAlign: "center",
+            }}
+          >
+            AI-Powered Complaint Resolution Platform
           </Typography>
         </Stack>
 
@@ -90,7 +116,7 @@ function RegisterPage() {
               Create Account
             </Typography>
             <Typography variant="body2" color="textSecondary">
-              Join the system to start resolving issues.
+              Create your ResolveFlow AI account and start managing complaints efficiently.
             </Typography>
           </Box>
 
@@ -233,34 +259,34 @@ function RegisterPage() {
                 py: 1.5,
                 fontWeight: 700,
                 borderRadius: 2.5,
-                bgcolor: "#10b981",
+                bgcolor: "#4f46e5",
                 fontSize: "0.95rem",
-                boxShadow: "0 4px 16px rgba(16,185,129,0.4)",
+                boxShadow: "0 4px 16px rgba(79,70,229,0.4)",
                 "&:hover": {
-                  bgcolor: "#059669",
-                  boxShadow: "0 6px 24px rgba(16,185,129,0.5)",
+                  bgcolor: "#3730a3",
+                  boxShadow: "0 6px 24px rgba(79,70,229,0.5)",
                 },
               }}
             >
               Create Account
             </Button>
-          </Stack>
 
-          <Typography variant="body2" textAlign="center" sx={{ mt: 3, color: "#64748b" }}>
-            Already have an account?{" "}
-            <Link
-              component="button"
-              onClick={() => navigate("/")}
-              sx={{
-                fontWeight: 700,
-                textDecoration: "none",
-                color: "#10b981",
-                "&:hover": { color: "#059669" },
-              }}
-            >
-              Login here
-            </Link>
-          </Typography>
+            <Typography variant="body2" textAlign="center" sx={{ mt: 3, color: "#64748b" }}>
+              Already have an account?{" "}
+              <Link
+                component="button"
+                onClick={() => navigate("/")}
+                sx={{
+                  fontWeight: 700,
+                  textDecoration: "none",
+                  color: "#4f46e5",
+                  "&:hover": { color: "#3730a3" },
+                }}
+                >
+                Sign In
+              </Link>
+            </Typography>
+          </Stack>
         </Paper>
       </Box>
     </Box>

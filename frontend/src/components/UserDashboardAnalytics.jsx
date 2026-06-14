@@ -61,11 +61,11 @@ function UserDashboardAnalytics() {
   ];
 
   return (
-    <Box sx={{ mb: 5 }}>
-      {/* Grid Track using size parameters */}
+    <Box sx={{ mb: 4 }}>
+      {/* Symmetrical System Sizing Track Row */}
       <Grid container spacing={3}>
         {cards.map((card) => (
-          <Grid item xs={12} sm={6} md={3} key={card.title} sx={{ display: "flex" }}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }} key={card.title} sx={{ display: "flex" }}>
             <Card
               sx={{
                 borderRadius: 3,
@@ -75,7 +75,7 @@ function UserDashboardAnalytics() {
                 width: "100%",
                 display: "flex",
                 flexDirection: "column",
-                transition: "transform 0.2s",
+                transition: "transform 0.2s, box-shadow 0.2s",
                 "&:hover": {
                   transform: "translateY(-3px)",
                   boxShadow: `0 8px 24px ${card.color}18`,
@@ -94,7 +94,7 @@ function UserDashboardAnalytics() {
                         letterSpacing: "0.06em",
                         fontSize: "0.65rem",
                         display: "block",
-                        mb: 1,
+                        mb: 0.5,
                       }}
                     >
                       {card.title}
@@ -128,16 +128,16 @@ function UserDashboardAnalytics() {
         ))}
       </Grid>
       
-      {/* Dynamic Header */}
+      {/* Section Header */}
       <Typography
         variant="h6"
         fontWeight={800}
-        sx={{ color: "#0f172a", mt: 4, mb: 2 }}
+        sx={{ color: "#0f172a", mt: 5, mb: 2.5, fontSize: "1.1rem" }}
       >
-        Complaint Status Overview
+        Complaint Status Breakdown
       </Typography>
 
-      {/* Restricting maximum container layout expansion width to prevent white space leaks */}
+      {/* Restricting grid track content boundaries on layout rows */}
       <Box sx={{ maxWidth: { xs: "100%", md: "50%" } }}>
         <UserStatusChart analytics={stats} />
       </Box>

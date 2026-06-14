@@ -46,25 +46,15 @@ function UserStatusChart({ analytics }) {
     <Card
       sx={{
         borderRadius: 3,
-        border: "1px solid #f1f5f9",
-        boxShadow: "0px 4px 20px rgba(0,0,0,0.04)",
-        height: "100%",
+        border: "1px solid #e2e8f0",
+        boxShadow: "none",
+        height: "auto",
+        width: "100%",
       }}
     >
       <CardContent sx={{ p: 3 }}>
-        {/* Header */}
         <Stack direction="row" alignItems="center" spacing={1.5} sx={{ mb: 3 }}>
-          <Box
-            sx={{
-              width: 36,
-              height: 36,
-              borderRadius: "10px",
-              bgcolor: "#fef3c7",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
+          <Box sx={{ width: 36, height: 36, borderRadius: "10px", bgcolor: "#fff7ed", border: "1px solid #ffedd5", display: "flex", alignItems: "center", justifyContent: "center" }}>
             <DonutSmallOutlined sx={{ fontSize: 20, color: "#f59e0b" }} />
           </Box>
           <Box>
@@ -77,18 +67,10 @@ function UserStatusChart({ analytics }) {
           </Box>
         </Stack>
 
-        {/* Chart */}
-        <Box sx={{ position: "relative" }}>
+        <Box sx={{ position: "relative", width: "100%", display: "flex", justifyContent: "center", alignItems: "center", my: 2 }}>
           <ResponsiveContainer width="100%" height={200}>
             <PieChart>
-              <Pie
-                data={data}
-                dataKey="value"
-                outerRadius={85}
-                innerRadius={50}
-                paddingAngle={3}
-                strokeWidth={0}
-              >
+              <Pie data={data} dataKey="value" outerRadius={85} innerRadius={50} paddingAngle={3} strokeWidth={0}>
                 {data.map((entry, index) => (
                   <Cell key={index} fill={entry.fill} />
                 ))}
@@ -97,17 +79,7 @@ function UserStatusChart({ analytics }) {
             </PieChart>
           </ResponsiveContainer>
 
-          {/* Center label */}
-          <Box
-            sx={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              textAlign: "center",
-              pointerEvents: "none",
-            }}
-          >
+          <Box sx={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", textAlign: "center", pointerEvents: "none" }}>
             <Typography variant="h4" fontWeight={800} color="#0f172a" lineHeight={1}>
               {total}
             </Typography>
@@ -117,7 +89,6 @@ function UserStatusChart({ analytics }) {
           </Box>
         </Box>
 
-        {/* Legend */}
         <Stack spacing={1.5} sx={{ mt: 2.5 }}>
           {data.map((item, i) => {
             const cfg = COLORS[i];
@@ -125,35 +96,15 @@ function UserStatusChart({ analytics }) {
             return (
               <Stack key={i} direction="row" alignItems="center" justifyContent="space-between">
                 <Stack direction="row" alignItems="center" spacing={1.2}>
-                  <Box
-                    sx={{
-                      width: 10,
-                      height: 10,
-                      borderRadius: "3px",
-                      bgcolor: cfg.color,
-                      flexShrink: 0,
-                    }}
-                  />
+                  <Box sx={{ width: 10, height: 10, borderRadius: "3px", bgcolor: cfg.color, flexShrink: 0 }} />
                   <Typography variant="body2" color="textSecondary" fontWeight={600}>
                     {item.name}
                   </Typography>
                 </Stack>
                 <Stack direction="row" alignItems="center" spacing={1}>
-                  <Typography variant="body2" fontWeight={800} color="#0f172a">
-                    {item.value}
-                  </Typography>
-                  <Box
-                    sx={{
-                      px: 0.8,
-                      py: 0.2,
-                      borderRadius: "5px",
-                      bgcolor: cfg.bg,
-                      border: `1px solid ${cfg.border}`,
-                    }}
-                  >
-                    <Typography variant="caption" fontWeight={700} sx={{ color: cfg.color, fontSize: "0.62rem" }}>
-                      {pct}%
-                    </Typography>
+                  <Typography variant="body2" fontWeight={800} color="#0f172a">{item.value}</Typography>
+                  <Box sx={{ px: 0.8, py: 0.2, borderRadius: "5px", bgcolor: cfg.bg, border: `1px solid ${cfg.border}` }}>
+                    <Typography variant="caption" fontWeight={700} sx={{ color: cfg.color, fontSize: "0.62rem" }}>{pct}%</Typography>
                   </Box>
                 </Stack>
               </Stack>

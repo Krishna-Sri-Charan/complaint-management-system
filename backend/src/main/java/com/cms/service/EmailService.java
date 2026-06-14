@@ -10,6 +10,12 @@ public class EmailService {
 
     @Autowired
     private JavaMailSender mailSender;
+    
+    private static final String SIGNATURE =
+
+            "\n\nRegards,\n"
+          + "ResolveFlow AI Support Team\n"
+          + "Smart Complaint Resolution Platform";
 
     public void sendEmail(
             String to,
@@ -28,7 +34,7 @@ public class EmailService {
 
             message.setSubject(subject);
 
-            message.setText(body);
+            message.setText(body + SIGNATURE);
 
             mailSender.send(message);
 

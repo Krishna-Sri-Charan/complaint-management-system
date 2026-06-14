@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   TextField, Button, Box, Typography, Paper,
   Link, Stack, InputAdornment, IconButton,
@@ -8,8 +9,8 @@ import {
   LockOutlined, Visibility, VisibilityOff,
 } from "@mui/icons-material";
 import API from "../../services/api";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import logo from "../../assets/resolveflow-logo.png";
 
 function LoginPage() {
   const [email, setEmail] = useState("");
@@ -62,14 +63,39 @@ function LoginPage() {
       <Box sx={{ width: "100%", maxWidth: 420, position: "relative", zIndex: 1 }}>
         {/* Logo */}
         <Stack alignItems="center" sx={{ mb: 3 }}>
+          <Box
+            component="img"
+            src={logo}
+            alt="ResolveFlow AI"
+            sx={{
+              width: 100,
+              height: 100,
+              mb: 1.5,
+              objectFit: "contain",
+              filter: "drop-shadow(0 8px 24px rgba(59,130,246,0.35))",
+            }}
+          />
+
           <Typography
-            variant="h5"
-            sx={{ fontWeight: 800, color: "#fff", letterSpacing: "-0.3px" }}
+            variant="h4"
+            sx={{
+              fontWeight: 800,
+              color: "#fff",
+              letterSpacing: "-0.5px",
+            }}
           >
-            CMS Portal
+            ResolveFlow AI
           </Typography>
-          <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.45)", mt: 0.3 }}>
-            Complaint Management System
+
+          <Typography
+            variant="body2"
+            sx={{
+              color: "rgba(255,255,255,0.7)",
+              mt: 0.5,
+              textAlign: "center",
+            }}
+          >
+            AI-Powered Complaint Resolution Platform
           </Typography>
         </Stack>
 
@@ -85,11 +111,22 @@ function LoginPage() {
           }}
         >
           <Box sx={{ mb: 3 }}>
-            <Typography variant="h5" sx={{ fontWeight: 800, color: "#0f172a", mb: 0.5 }}>
-              Welcome back
+            <Typography
+              variant="h5"
+              sx={{
+                fontWeight: 800,
+                color: "#0f172a",
+                mb: 0.5,
+              }}
+            >
+              Welcome Back
             </Typography>
-            <Typography variant="body2" color="textSecondary">
-              Sign in to manage your complaints efficiently.
+
+            <Typography
+              variant="body2"
+              color="textSecondary"
+            >
+              Sign in to access your ResolveFlow AI workspace.
             </Typography>
           </Box>
 
@@ -174,23 +211,23 @@ function LoginPage() {
             >
               Sign In
             </Button>
-          </Stack>
 
-          <Typography variant="body2" textAlign="center" sx={{ mt: 3, color: "#64748b" }}>
-            Don't have an account?{" "}
-            <Link
-              component="button"
-              onClick={() => navigate("/register")}
-              sx={{
-                fontWeight: 700,
-                textDecoration: "none",
-                color: "#6366f1",
-                "&:hover": { color: "#4f46e5" },
-              }}
-            >
-              Register Now
-            </Link>
-          </Typography>
+            <Typography variant="body2" textAlign="center" sx={{ mt: 3, color: "#64748b" }}>
+              Don't have an account?{" "}
+              <Link
+                component="button"
+                onClick={() => navigate("/register")}
+                sx={{
+                  fontWeight: 700,
+                  textDecoration: "none",
+                  color: "#6366f1",
+                  "&:hover": { color: "#4f46e5" },
+                }}
+                >
+                Create Account
+              </Link>
+            </Typography>
+          </Stack>
         </Paper>
       </Box>
     </Box>
