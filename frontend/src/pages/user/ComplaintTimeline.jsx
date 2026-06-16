@@ -37,9 +37,19 @@ function ComplaintTimeline() {
 
   const formatDate = (dateStr) => {
     const d = new Date(dateStr);
+    
     return {
-      date: d.toLocaleDateString("en-In", { month: "short", day: "numeric", year: "numeric" }),
-      time: d.toLocaleTimeString("en-In", { hour: "2-digit", minute: "2-digit" }),
+      date: d.toLocaleDateString("en-IN", {
+        timeZone: "Asia/Kolkata",
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      }),
+      time: d.toLocaleTimeString("en-IN", {
+        timeZone: "Asia/Kolkata",
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
     };
   };
 

@@ -93,13 +93,22 @@ function AdminDashboardAnalytics() {
     };
   });
 
+  const avgResolution =
+  analytics?.averageResolutionHours ?? 0;
+
+  const fastestResolution =
+    analytics?.fastestResolutionHours ?? 0;
+
+  const slowestResolution =
+    analytics?.slowestResolutionHours ?? 0;
+
   const statCards = [
     { label: "Total Complaints", value: stats.totalComplaints, icon: <ConfirmationNumberOutlined sx={{ fontSize: 22 }} />, color: "#6366f1", bg: "#eef2ff", border: "#c7d2fe" },
     { label: "Resolved", value: stats.resolvedComplaints, icon: <CheckCircleOutline sx={{ fontSize: 22 }} />, color: "#10b981", bg: "#ecfdf5", border: "#a7f3d0" },
     { label: "Pending", value: stats.pendingComplaints, icon: <HourglassEmptyOutlined sx={{ fontSize: 22 }} />, color: "#f59e0b", bg: "#fffbeb", border: "#fde68a" },
-    { label: "Avg Resolution", value: `${stats?.averageResolutionTime || 0}h`, icon: <AccessTime sx={{ fontSize: 22 }} />, color: "#06b6d4", bg: "#ecfeff", border: "#a5f3fc" },
-    { label: "Fastest", value: `${stats?.fastestResolutionTime || 0}h`, icon: <AccessTime sx={{ fontSize: 22 }} />, color: "#22c55e", bg: "#f0fdf4", border: "#bbf7d0" },
-    { label: "Slowest", value: `${stats?.slowestResolutionTime || 0}h`, icon: <AccessTime sx={{ fontSize: 22 }} />, color: "#ef4444", bg: "#fef2f2", border: "#fecaca" },
+    { label: "Avg Resolution", value: `${avgResolution.toFixed(1) || 0}h`, icon: <AccessTime sx={{ fontSize: 22 }} />, color: "#06b6d4", bg: "#ecfeff", border: "#a5f3fc" },
+    { label: "Fastest", value: `${fastestResolution.toFixed(1) || 0}h`, icon: <AccessTime sx={{ fontSize: 22 }} />, color: "#22c55e", bg: "#f0fdf4", border: "#bbf7d0" },
+    { label: "Slowest", value: `${slowestResolution.toFixed(1) || 0}h`, icon: <AccessTime sx={{ fontSize: 22 }} />, color: "#ef4444", bg: "#fef2f2", border: "#fecaca" },
   ];
 
   if (loading) return <CommonLoader />;
