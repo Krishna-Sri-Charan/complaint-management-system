@@ -22,6 +22,7 @@ function RegisterPage() {
     role: "USER",
   });
   const [showPassword, setShowPassword] = useState(false);
+  const [specialization, setSpecialization] = useState("");
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -29,7 +30,21 @@ function RegisterPage() {
 
   const handleRegister = async () => {
     try {
-      await API.post("/auth/register", form);
+        if (
+          form.role === "TECHNICIAN"
+          &&
+          !specialization
+      ) {
+          alert("Please select a specialization");
+          return;
+      }
+      await API.post("/auth/register", {
+        ...form,
+        specialization:
+        form.role === "TECHNICIAN"
+          ? specialization
+          : null
+      });
       navigate("/");
     } catch (error) {
       alert("Registration failed");
@@ -248,6 +263,37 @@ function RegisterPage() {
                 </Box>
               )}
             </Box>
+
+            {selectedRole?.value === "TECHNICIAN" && (
+              <TextField
+                fullWidth
+                select
+                label="Specialization"
+                name="specialization"
+                value={specialization}
+                onChange={(e) => setSpecialization(e.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <BadgeOutlined sx={{ fontSize: 18, color: "#94a3b8" }} />
+                    </InputAdornment>
+                  ),
+                }}
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: 2.5,
+                    "&:hover fieldset": { borderColor: "#10b981" },
+                    "&.Mui-focused fieldset": { borderColor: "#10b981" },
+                  },
+                }}
+              >
+                <MenuItem value="NETWORK">Network</MenuItem>
+                <MenuItem value="SOFTWARE">Software</MenuItem>
+                <MenuItem value="HARDWARE">Hardware</MenuItem>
+                <MenuItem value="DATABASE">Database</MenuItem>
+                <MenuItem value="SECURITY">Security</MenuItem>
+              </TextField>
+            )}
 
             <Button
               fullWidth

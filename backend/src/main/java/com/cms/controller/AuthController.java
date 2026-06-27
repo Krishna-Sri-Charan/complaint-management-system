@@ -38,6 +38,7 @@ public class AuthController {
                 .email(request.getEmail())
                 .password(request.getPassword())
                 .role(request.getRole())
+                .specialization(request.getSpecialization())
                 .build();
 
         User savedUser = authService.register(user);
@@ -77,6 +78,9 @@ public class AuthController {
                             .name(user.get().getName())
                             .email(user.get().getEmail())
                             .role(user.get().getRole())
+                            .specialization(
+                                    user.get().getSpecialization()
+                            )
                             .token(token)
                             .build();
 

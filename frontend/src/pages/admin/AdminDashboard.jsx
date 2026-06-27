@@ -3,7 +3,7 @@ import {
   Box, Typography, Card, CardContent, Button,
   Stack, Chip, Grid, Dialog,
   DialogTitle, DialogContent, DialogActions, TextField, MenuItem, InputAdornment,
-  Divider, IconButton, Tooltip, Menu, Pagination
+  Divider, IconButton, Tooltip, Menu, Pagination, Select, FormControl, InputLabel
 } from "@mui/material";
 import {
   Update, FilterList, AdminPanelSettings, Engineering, SearchOutlined,
@@ -34,6 +34,8 @@ function AdminDashboard() {
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [technicians, setTechnicians] = useState([]);
+  const [selectedTechnician, setSelectedTechnician] = useState("");
 
   const handleMenuOpen = (event, complaintId) => {
     event.stopPropagation();
@@ -61,7 +63,17 @@ function AdminDashboard() {
   }, [page]);
 
   useEffect(() => {
+    const fetchTechnicians = async () => {
+      try {
+        const res = await API.get("/admin/technicians");
+        setTechnicians(res.data.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
     fetchComplaints();
+    fetchTechnicians();
   }, [fetchComplaints]);
 
   const handleOpenModal = (id, type) => {
@@ -75,7 +87,7 @@ function AdminDashboard() {
     setLoading(true);
     try {
       if (modalType === "ASSIGN") {
-        await API.put(`/admin/assign-technician?complaintId=${selectedId}&technicianId=${inputValue}`);
+        await API.put(`/admin/assign-technician?complaintId=${selectedId}&technicianId=${selectedTechnician}`);
       } else {
         await API.put(`/admin/update-status?complaintId=${selectedId}&status=${inputValue}`);
       }
@@ -376,6 +388,39 @@ function AdminDashboard() {
                         {c.description || "No description text logged for this file asset."}
                       </Typography>
 
+                      <Stack
+                        direction="row"
+                        spacing={1}
+                        flexWrap="wrap"
+                        sx={{ mb: 2 }}
+                      >
+                        {c.aiCategory && (
+                          <Chip
+                            label={`AI Category: ${c.aiCategory}`}
+                            size="small"
+                            sx={{
+                              bgcolor: "#ecfeff",
+                              color: "#0891b2",
+                              border: "1px solid #a5f3fc",
+                              fontWeight: 700
+                            }}
+                          />
+                        )}
+
+                        {c.technician && (
+                          <Chip
+                            label={`Assigned: ${c.technician.name}`}
+                            size="small"
+                            sx={{
+                              bgcolor: "#f0fdf4",
+                              color: "#16a34a",
+                              border: "1px solid #bbf7d0",
+                              fontWeight: 700
+                            }}
+                          />
+                        )}
+                      </Stack>
+
                       <Box sx={{ flexGrow: 1 }} />
                       <Divider sx={{ my: 2, borderColor: "#f1f5f9" }} />
 
@@ -485,11 +530,31 @@ function AdminDashboard() {
           <Divider />
           <DialogContent sx={{ pt: 3, pb: 2 }}>
             {modalType === "ASSIGN" ? (
-              <TextField
-                fullWidth label="Operator Technician ID" variant="outlined"
-                value={inputValue} onChange={(e) => setInputValue(e.target.value)}
-                sx={{ "& .MuiOutlinedInput-root": { borderRadius: "8px" } }}
-              />
+              <FormControl fullWidth>
+                <InputLabel>
+                  Technician
+                </InputLabel>
+                <Select
+                  value={selectedTechnician}
+                  label="Technician"
+                  onChange={(e) =>
+                    setSelectedTechnician(
+                      e.target.value
+                    )
+                  }
+                >
+                  {technicians.map((tech) => (
+                    <MenuItem
+                      key={tech.id}
+                      value={tech.id}
+                    >
+                      {tech.name}
+                      {" "}
+                      ({tech.specialization || "GENERAL"})
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             ) : (
               <TextField
                 fullWidth select label="Target Status State"

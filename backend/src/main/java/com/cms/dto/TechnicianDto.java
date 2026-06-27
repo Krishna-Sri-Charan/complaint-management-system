@@ -1,23 +1,14 @@
 package com.cms.dto;
 
-import com.cms.model.Role;
-
 import lombok.Builder;
 import lombok.Data;
 
 @Data
 @Builder
-public class LoginResponse {
+public class TechnicianDto {
 
     private Long id;
-
     private String name;
-
     private String email;
-
-    private Role role;
-    
     private String specialization;
-    
-    private String token;
 }

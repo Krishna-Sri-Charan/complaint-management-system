@@ -11,7 +11,7 @@ import Layout from "../../components/Layout";
 import API from "../../services/api";
 
 function ProfilePage() {
-  const [profile, setProfile] = useState({ name: "", email: "", role: "" });
+  const [profile, setProfile] = useState({ name: "", email: "", role: "", specialization: "" });
   const [passwordData, setPasswordData] = useState({ oldPassword: "", newPassword: "" });
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -189,6 +189,12 @@ function ProfilePage() {
                     <Typography variant="caption" sx={{ fontWeight: 700, color: "#475569", textTransform: "uppercase", letterSpacing: "0.06em", fontSize: "0.65rem", display: "block", mb: 1 }}>Assigned Operational Scope Role</Typography>
                     <TextField fullWidth value={profile.role} disabled InputProps={{ startAdornment: <InputAdornment position="start"><BadgeOutlined sx={{ fontSize: 18, color: "#94a3b8" }} /></InputAdornment> }} sx={{ "& .MuiOutlinedInput-root": { borderRadius: "8px", bgcolor: "#f8fafc" }, "& .MuiInputBase-input.Mui-disabled": { WebkitTextFillColor: "#64748b", fontWeight: 600 } }} />
                   </Grid>
+                  {profile.role === "TECHNICIAN" && (
+                    <Grid item xs={12}>
+                      <Typography variant="caption" sx={{ fontWeight: 700, color: "#475569", textTransform: "uppercase", letterSpacing: "0.06em", fontSize: "0.65rem", display: "block", mb: 1 }}>Specialization</Typography>
+                      <TextField fullWidth value={profile.specialization} disabled InputProps={{ startAdornment: <InputAdornment position="start"><BadgeOutlined sx={{ fontSize: 18, color: "#94a3b8" }} /></InputAdornment> }} sx={{ "& .MuiOutlinedInput-root": { borderRadius: "8px", bgcolor: "#f8fafc" }, "& .MuiInputBase-input.Mui-disabled": { WebkitTextFillColor: "#64748b", fontWeight: 600 } }} />
+                    </Grid>
+                  )}
                 </Grid>
                 <Divider sx={{ my: 3.5, borderColor: "#f1f5f9" }} />
                 <Box sx={{ display: "flex", justifyContent: "flex-end" }}>

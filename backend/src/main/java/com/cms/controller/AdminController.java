@@ -1,10 +1,13 @@
 package com.cms.controller;
 
 import com.cms.dto.ApiResponse;
+import com.cms.dto.TechnicianDto;
 import com.cms.model.Complaint;
 import com.cms.model.ComplaintPriority;
 import com.cms.service.ComplaintService;
 import com.cms.model.ComplaintStatus;
+import com.cms.model.Role;
+import com.cms.repository.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +25,9 @@ public class AdminController {
 
     @Autowired
     private ComplaintService complaintService;
+    
+    @Autowired
+    private UserRepository userRepository;
 
     @GetMapping("/complaints")
     public Page<Complaint> getAllComplaints(Pageable pageable) {
@@ -63,6 +69,31 @@ public class AdminController {
                                 priority
                         )
                 )
+                .build();
+    }
+    
+    @GetMapping("/technicians")
+    public ApiResponse<List<TechnicianDto>> getTechnicians() {
+
+        List<TechnicianDto> technicians =
+                userRepository.findByRole(Role.TECHNICIAN)
+                        .stream()
+                        .map(user ->
+                                TechnicianDto.builder()
+                                        .id(user.getId())
+                                        .name(user.getName())
+                                        .email(user.getEmail())
+                                        .specialization(
+                                                user.getSpecialization()
+                                        )
+                                        .build()
+                        )
+                        .toList();
+
+        return ApiResponse.<List<TechnicianDto>>builder()
+                .success(true)
+                .message("Technicians fetched")
+                .data(technicians)
                 .build();
     }
 }
