@@ -1,5 +1,7 @@
 package com.cms.model;
 
+import java.time.LocalDateTime;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.*;
@@ -29,5 +31,11 @@ public class User {
     private Role role;
     
     private String specialization;
+    
+    private Integer failedAttempts;
+
+    private boolean accountLocked;
+
+    private LocalDateTime lockTime;
 
 }

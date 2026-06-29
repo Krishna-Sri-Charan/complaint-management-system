@@ -13,6 +13,30 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+	
+	@ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ApiResponse<Object>>
+    handleAuthenticationException(
+            AuthenticationException ex
+    ) {
+
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+
+                .body(
+
+                        ApiResponse.builder()
+
+                                .success(false)
+
+                                .message(
+                                        ex.getMessage()
+                                )
+
+                                .build()
+
+                );
+    }
 
 	@ExceptionHandler(ResourceNotFoundException.class)
 	public ResponseEntity<ApiResponse<Object>> handleResourceNotFound(

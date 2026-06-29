@@ -11,6 +11,8 @@ import {
   BadgeOutlined,
 } from "@mui/icons-material";
 import API from "../../services/api";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 import logo from "../../assets/resolveflow-logo.png";
 
 function RegisterPage() {
@@ -23,32 +25,124 @@ function RegisterPage() {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [specialization, setSpecialization] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const [notification, setNotification] = useState({
+    open: false,
+    message: "",
+    severity: "success"
+  });
+
+  const [errors, setErrors] = useState({
+    name: "",
+    email: "",
+    password: "",
+    specialization: ""
+  });
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const handleRegister = async () => {
+
+    const validation = {
+      name: "",
+      email: "",
+      password: "",
+      specialization: ""
+    };
+
+    if (!form.name.trim())
+      validation.name = "Full name is required.";
+
+    else if (form.name.trim().length < 3)
+      validation.name = "Minimum 3 characters required.";
+
+    if (!form.email.trim())
+      validation.email = "Email is required.";
+
+    else if (
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)
+    )
+      validation.email = "Enter a valid email.";
+
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
+
+    if (!form.password)
+      validation.password = "Password is required.";
+
+    else if (!passwordRegex.test(form.password))
+      validation.password =
+        "Password must contain uppercase, lowercase, number and special character.";
+
+    if (
+      form.role === "TECHNICIAN" &&
+      !specialization
+    )
+      validation.specialization =
+        "Select technician specialization.";
+
+    setErrors(validation);
+
+    if (
+      Object.values(validation).some(v => v !== "")
+    )
+      return;
+
+    setLoading(true);
+
     try {
-        if (
-          form.role === "TECHNICIAN"
-          &&
-          !specialization
-      ) {
-          alert("Please select a specialization");
-          return;
-      }
+
       await API.post("/auth/register", {
+
         ...form,
+
         specialization:
-        form.role === "TECHNICIAN"
-          ? specialization
-          : null
+          form.role === "TECHNICIAN"
+            ? specialization
+            : null
+
       });
-      navigate("/");
+
+      setNotification({
+
+        open: true,
+
+        severity: "success",
+
+        message:
+          "Account created successfully."
+
+      });
+
+      setTimeout(() => {
+
+        navigate("/");
+
+      }, 1200);
+
     } catch (error) {
-      alert("Registration failed");
+
+      setNotification({
+
+        open: true,
+
+        severity: "error",
+
+        message:
+          error.response?.data?.message ||
+          "Registration failed."
+
+      });
+
+    } finally {
+
+      setLoading(false);
+
     }
+
   };
 
   const roleOptions = [
@@ -137,6 +231,8 @@ function RegisterPage() {
 
           <Stack spacing={2.5}>
             <TextField
+              error={!!errors.name}
+              helperText={errors.name}
               fullWidth
               label="Full Name"
               name="name"
@@ -158,6 +254,8 @@ function RegisterPage() {
             />
 
             <TextField
+              error={!!errors.email}
+              helperText={errors.email}
               fullWidth
               label="Email Address"
               name="email"
@@ -179,11 +277,18 @@ function RegisterPage() {
             />
 
             <TextField
+              error={!!errors.password}
+              helperText={errors.password}
               fullWidth
               label="Password"
               name="password"
               type={showPassword ? "text" : "password"}
               onChange={handleChange}
+              onKeyDown={(e)=>{
+                if(e.key==="Enter"){
+                  handleRegister();
+                }
+              }}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -266,6 +371,8 @@ function RegisterPage() {
 
             {selectedRole?.value === "TECHNICIAN" && (
               <TextField
+                error={!!errors.specialization}
+                helperText={errors.specialization}
                 fullWidth
                 select
                 label="Specialization"
@@ -299,7 +406,8 @@ function RegisterPage() {
               fullWidth
               size="large"
               variant="contained"
-              startIcon={<PersonAdd />}
+              startIcon={!loading && <PersonAdd />}
+              disabled={loading}
               onClick={handleRegister}
               sx={{
                 py: 1.5,
@@ -314,7 +422,7 @@ function RegisterPage() {
                 },
               }}
             >
-              Create Account
+              {loading ? "Creating Account..." : "Create Account"}
             </Button>
 
             <Typography variant="body2" textAlign="center" sx={{ mt: 3, color: "#64748b" }}>
@@ -334,6 +442,37 @@ function RegisterPage() {
             </Typography>
           </Stack>
         </Paper>
+        <Snackbar
+          open={notification.open}
+          autoHideDuration={3500}
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "right"
+          }}
+          onClose={() =>
+            setNotification(prev => ({
+              ...prev,
+              open: false
+            }))
+          }
+        >
+
+          <Alert
+            severity={notification.severity}
+            variant="filled"
+            onClose={() =>
+              setNotification(prev => ({
+                ...prev,
+                open: false
+              }))
+            }
+          >
+
+            {notification.message}
+
+          </Alert>
+
+        </Snackbar>
       </Box>
     </Box>
   );

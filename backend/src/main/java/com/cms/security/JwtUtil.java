@@ -13,6 +13,9 @@ public class JwtUtil {
 
     private static final String SECRET =
             "mysecretkeymysecretkeymysecretkey12345";
+    
+    private static final long JWT_EXPIRATION =
+            1000 * 60 * 30;
 
     private Key getKey() {
 
@@ -34,7 +37,7 @@ public class JwtUtil {
                 .setExpiration(
                         new Date(
                                 System.currentTimeMillis()
-                                        + 1000 * 60 * 60 * 24
+                                        + JWT_EXPIRATION
                         )
                 )
 

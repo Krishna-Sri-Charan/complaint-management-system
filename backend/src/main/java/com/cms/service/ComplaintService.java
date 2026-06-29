@@ -54,6 +54,30 @@ public class ComplaintService {
         if (file != null && !file.isEmpty()) {
 
             fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+            
+            String contentType =
+                    file.getContentType();
+
+            List<String> allowedTypes = List.of(
+
+            		"image/jpg",
+                    "image/jpeg",
+                    "image/png"
+            );
+
+            if (!allowedTypes.contains(contentType)) {
+
+                throw new IllegalArgumentException(
+                        "Only JPG, JPEG and PNG files are allowed."
+                );
+            }
+            
+            if (file.getSize() > 5 * 1024 * 1024) {
+
+                throw new IllegalArgumentException(
+                        "Maximum file size is 5 MB."
+                );
+            }
 
             Path uploadPath = Paths.get("uploads");
 
@@ -80,10 +104,24 @@ public class ComplaintService {
         	    :
 
         	    request.getUserPriority();
+        
+        if (request.getTitle() == null ||
+    	    request.getTitle().trim().isEmpty()) {
+
+    	    throw new IllegalArgumentException(
+    	            "Complaint title is required");
+    	}
+
+    	if (request.getDescription() == null ||
+    	    request.getDescription().trim().isEmpty()) {
+
+    	    throw new IllegalArgumentException(
+    	            "Complaint description is required");
+    	}
 
         Complaint complaint = Complaint.builder()
-                .title(request.getTitle())
-                .description(request.getDescription())
+        		.title(request.getTitle().trim())
+        		.description(request.getDescription().trim())
                 .attachmentUrl(fileName)
                 .status(ComplaintStatus.OPEN)
                 .aiCategory(request.getAiCategory())

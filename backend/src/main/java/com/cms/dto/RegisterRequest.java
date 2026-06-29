@@ -3,6 +3,7 @@ package com.cms.dto;
 import com.cms.model.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
@@ -16,7 +17,10 @@ public class RegisterRequest {
     @NotBlank(message = "Email is required")
     private String email;
 
-    @Size(min = 5, message = "Password must be at least 5 characters")
+    @Pattern(
+	    regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&]).{8,}$",
+	    message = "Password must contain uppercase, lowercase, number and special character."
+	)
     private String password;
 
     private Role role;

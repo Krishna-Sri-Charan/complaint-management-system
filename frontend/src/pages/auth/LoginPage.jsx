@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   TextField, Button, Box, Typography, Paper,
@@ -6,8 +6,10 @@ import {
 } from "@mui/material";
 import {
   Login as LoginIcon, EmailOutlined,
-  LockOutlined, Visibility, VisibilityOff,
+  LockOutlined, Visibility, VisibilityOff
 } from "@mui/icons-material";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 import API from "../../services/api";
 import { useAuth } from "../../context/AuthContext";
 import logo from "../../assets/resolveflow-logo.png";
@@ -16,10 +18,33 @@ function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [notification, setNotification] = useState({
+      open: false,
+      message: "",
+      severity: "success"
+  });
   const navigate = useNavigate();
   const { login } = useAuth();
+  const emailRef = useRef(null);
+  const passwordRef = useRef(null);
 
   useEffect(() => {
+    if (
+        sessionStorage.getItem(
+            "sessionExpired"
+        )
+    ) {
+        setNotification({
+            open: true,
+            severity: "warning",
+            message:
+                "Session expired. Please login again."
+        });
+        sessionStorage.removeItem(
+            "sessionExpired"
+        );
+    }
     const token = localStorage.getItem("cms_token");
     const storedUser = localStorage.getItem("cms_user");
     if (!token || !storedUser) return;
@@ -30,15 +55,93 @@ function LoginPage() {
   }, [navigate]);
 
   const handleLogin = async () => {
+
+    if (!email.trim() && !password.trim()) {
+
+      setNotification({
+        open: true,
+        severity: "warning",
+        message: "Please enter your email and password."
+      });
+
+      return;
+    }
+
+    if (!email.trim()) {
+
+      emailRef.current.focus();
+
+      setNotification({
+        open: true,
+        severity: "warning",
+        message: "Please enter your email address."
+      });
+
+      return;
+    }
+
+    if (!password.trim()) {
+
+      passwordRef.current.focus();
+
+      setNotification({
+        open: true,
+        severity: "warning",
+        message: "Please enter your password."
+      });
+
+      return;
+    }
+
+    setLoading(true);
+
     try {
-      const res = await API.post("/auth/login", { email, password });
+
+      const res = await API.post("/auth/login", {
+        email,
+        password
+      });
+
       const userData = res.data.data;
       login(userData);
-      if (userData.role === "ADMIN") navigate("/admin-dashboard");
-      else if (userData.role === "TECHNICIAN") navigate("/technician-dashboard");
-      else navigate("/dashboard");
+
+      setNotification({
+        open: true,
+        message: "Login successful!",
+        severity: "success"
+      });
+
+      setTimeout(() => {
+
+        if (userData.role === "ADMIN")
+          navigate("/admin-dashboard");
+
+        else if (userData.role === "TECHNICIAN")
+          navigate("/technician-dashboard");
+
+        else
+          navigate("/dashboard");
+
+      }, 1200);
+
     } catch (error) {
-      alert("Login failed. Please check your credentials.");
+
+      setNotification({
+
+        open: true,
+
+        severity: "error",
+
+        message:
+          error.response?.data?.message ||
+          "Unable to login. Please try again."
+
+      });
+
+    } finally {
+
+      setLoading(false);
+
     }
   };
 
@@ -132,6 +235,7 @@ function LoginPage() {
 
           <Stack spacing={2.5}>
             <TextField
+              inputRef={emailRef}
               fullWidth
               label="Email Address"
               variant="outlined"
@@ -154,12 +258,18 @@ function LoginPage() {
             />
 
             <TextField
+              inputRef={passwordRef}
               fullWidth
               label="Password"
               type={showPassword ? "text" : "password"}
               variant="outlined"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleLogin();
+                }
+              }}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -194,8 +304,9 @@ function LoginPage() {
               fullWidth
               size="large"
               variant="contained"
-              endIcon={<LoginIcon />}
+              endIcon={!loading && <LoginIcon />}
               onClick={handleLogin}
+              disabled={loading}
               sx={{
                 py: 1.5,
                 fontWeight: 700,
@@ -209,7 +320,9 @@ function LoginPage() {
                 },
               }}
             >
-              Sign In
+
+              {loading ? "Signing In..." : "Sign In"}
+
             </Button>
 
             <Typography variant="body2" textAlign="center" sx={{ mt: 3, color: "#64748b" }}>
@@ -229,6 +342,25 @@ function LoginPage() {
             </Typography>
           </Stack>
         </Paper>
+        <Snackbar
+          open={notification.open}
+          autoHideDuration={3500}
+          onClose={() =>
+            setNotification((prev) => ({ ...prev, open: false }))
+          }
+          anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        >
+          <Alert
+            onClose={() =>
+              setNotification((prev) => ({ ...prev, open: false }))
+            }
+            severity={notification.severity}
+            variant="filled"
+            sx={{ width: "100%" }}
+          >
+            {notification.message}
+          </Alert>
+        </Snackbar>
       </Box>
     </Box>
   );

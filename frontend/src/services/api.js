@@ -39,6 +39,11 @@ API.interceptors.response.use(
 
       localStorage.removeItem("cms_token");
 
+      sessionStorage.setItem(
+        "sessionExpired",
+        "true"
+      );
+
       window.location.href = "/";
     }
 
